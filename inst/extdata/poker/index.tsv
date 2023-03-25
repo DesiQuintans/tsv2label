@@ -1,0 +1,16 @@
+name	rename	description	factor_file
+ID	random_int	A bunch of random integers.	
+S1	c1_suit	Suit of card #1	values_suits
+C1	c1_rank	Rank of card #1	values_ranks
+S2	c2_suit	Suit of card #2	values_suits
+C2	c2_rank	Rank of card #2	values_ranks
+S3	c3_suit	Suit of card #3	values_suits
+C3	c3_rank	Rank of card #3	values_ranks
+S4	c4_suit	Suit of card #4	values_suits
+C4	c4_rank	Rank of card #4	values_ranks
+S5	c5_suit	Suit of card #5	values_suits
+C5	c5_rank	Rank of card #5	values_ranks
+CLASS	hand_from_cards	Poker hand formed by cards 1 to 5	values_hands
+CAT	random_cats	Randomly generated names for cats.	
+FLIP		Results of a simulated coinflip.	
+not_exist		This column doesn't exist in the dataset.	
