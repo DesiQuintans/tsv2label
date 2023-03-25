@@ -6,7 +6,7 @@ Desi Quintans
 # Installation
 
 ``` r
-remotes::install_github("DesiQuintans/tsv2label0")
+remotes::install_github("DesiQuintans/tsv2label")
 # CRAN coming soon
 ```
 
@@ -28,7 +28,7 @@ assemble by copying and pasting from existing messy data dictionaries;
 can be cleaned and reshaped with regular expressions; and can be tracked
 and diffed with version control software.
 
-![](tsv2label.png)
+![](data-raw/tsv2label.png)
 
 ------------------------------------------------------------------------
 

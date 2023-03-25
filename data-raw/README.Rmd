@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Installation
 
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
-remotes::install_github("DesiQuintans/tsv2label0")
+remotes::install_github("DesiQuintans/tsv2label")
 # CRAN coming soon
 ```
 
@@ -27,7 +27,7 @@ If you've ever tried to find your way through a dataset with cryptic names and v
 
 It uses tab-delimited spreadsheets which are editable in Excel; easy to assemble by copying and pasting from existing messy data dictionaries; can be cleaned and reshaped with regular expressions; and can be tracked and diffed with version control software.
 
-![](tsv2label.png)
+![](data-raw/tsv2label.png)
 
 --------------------------------------------------------------------------------
 
