@@ -37,10 +37,11 @@ and diffed with version control software.
 A data dictionary is a directory or .zip file with no subfolders, which
 contains tab-delimited spreadsheets in either *.TSV* or *.TXT* format.
 
-The Appendix below has the [formal definition of a dictionary](#formal),
-but the easiest way to understand how a data dictionary is shaped is by
-looking at the one that is included with `tsv2label`. You can find where
-it is installed on your computer by running:
+The Appendix below has the [formal definition of a
+dictionary](#formal-definition-of-a-tsv2label-data-dictionary), but the
+easiest way to understand how a data dictionary is shaped is by looking
+at the one that is included with `tsv2label`. You can find where it is
+installed on your computer by running:
 
 ``` r
 library(tsv2label)
@@ -284,7 +285,7 @@ dictionary_dir
 ### Converting categorical variables to Factors
 
 Converting to Factor always comes first in our [order of
-operations](#order).
+operations](#order-of-operations).
 
 ``` r
 # If you were using your own data dictionary, then your `path` argument would 
