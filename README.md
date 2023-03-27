@@ -1,7 +1,7 @@
 Labelling datasets using a data dictionary, with `tsv2label`
 ================
 Desi Quintans
-2023-03-25
+2023-03-27
 
 # Installation
 
@@ -46,16 +46,17 @@ installed on your computer by running:
 ``` r
 library(tsv2label)
 
-system.file("extdata/poker", package="tsv2label")
+system.file("extdata/poker", package = "tsv2label")
 ```
 
 ### Index file
 
-The central file is called `index`; it must always exist.
+The central file is called `index`; it must always exist, and must be a
+tab-delimited file in *.TSV* or *.TXT* format.
 
 ``` r
-read.delim(system.file("extdata/poker/index.tsv", package="tsv2label")) |>
-    head()
+read.delim(system.file("extdata/poker/index.tsv", package = "tsv2label")) |>
+  head()
 ```
 
     ##   name     rename                 description  factor_file
@@ -66,30 +67,31 @@ read.delim(system.file("extdata/poker/index.tsv", package="tsv2label")) |>
     ## 5   C2    c2_rank             Rank of card #2 values_ranks
     ## 6   S3    c3_suit             Suit of card #3 values_suits
 
-It has four columns:
+It must have these four columns, in any order:
 
 1.  `name` is the name of a column/variable in your dataset.
 2.  `rename` is what to rename the column. Leave it blank if unneeded.
 3.  `description` is a human-readable description of what the variable
     is about.
 4.  `factor_file` is used to convert categorical data into Factors. It
-    has the filename (*without the file extension*) of a spreadsheet in
-    the same folder that describes how values are mapped to labels,
+    has the filename (with or without file extension) of a spreadsheet
+    in the same folder that describes how values are mapped to labels,
     e.g. postal codes to place names. Leave it blank if unneeded. As you
     can see, many variables can use the same `factor_file`.
+
+Any other columns in the file will be ignored.
 
 ### Factor files
 
 The factor files control how a variable is going to be converted to a
 Factor type. What you name the file does not matter, as long as you
-write its name exactly in the `index`’s `factor_file` fields (but
-without the file extension).
+write its name exactly in the `index`’s `factor_file` fields.
 
 A factor file look like this:
 
 ``` r
-read.delim(system.file("extdata/poker/values_suits.tsv", package="tsv2label")) |> 
-    head()
+read.delim(system.file("extdata/poker/values_suits.tsv", package = "tsv2label")) |>
+  head()
 ```
 
     ##   level    label ordered
@@ -288,7 +290,7 @@ Converting to Factor always comes first in our [order of
 operations](#order-of-operations).
 
 ``` r
-# If you were using your own data dictionary, then your `path` argument would 
+# If you were using your own data dictionary, then your `path` argument would
 # point to its location on your computer.
 factorise_with_dictionary(df = poker_copy, path = dictionary_dir)
 ```
@@ -420,43 +422,96 @@ colnames(poker_copy)
 
 ## Formal definition of a `tsv2label` data dictionary
 
-Formally, a data dictionary as recognised by the package as:
+The keywords **REQUIRED/MUST**, **MUST NOT**, and **MAY/OPTIONAL** are
+interpreted according to [RFC
+2119](https://www.ietf.org/rfc/rfc2119.txt). I add an extra keyword,
+**IGNORED**, for clarity about what `tsv2label` will permit.
 
-1.  A directory or .zip file that contains a file called `index.tsv` or
-    `index.txt` in its root folder.
-    - Subfolders are permitted, but are not searched through. All
-      dictionary files must be in the root.
-2.  For `index`:
-    1.  `index` **must** be a tab-separated spreadsheet. You can get
-        this from Excel by saving your spreadsheet as *“Text (Tab
-        delimited) (.txt)”*. .TXT files are recognised by `tsv2label`.
-    2.  `index` **must** have these four columns:
-        - `name` — The exact name of a column in your dataframe. It’s
-          okay to have names that don’t exist in the dataframe yet; this
-          means that you can pre-name a variable that you expect to be
-          creating in the future.
-        - `rename` — What to rename the column. Leave blank if you don’t
-          want to rename it.
-        - `description` — Description of what the column contains or is
-          about. Also known as ‘variable labels’.
-        - `factor_file` — For categorical data, the filename of a
-          spreadsheet in the same folder (*without the file extension*)
-          that describes how values are mapped to labels, e.g. postal
-          codes to place names. These are also known as ‘value labels’.
-          Many rows can use the same factor file. Leave blank if not
-          relevant.
-3.  **Optionally**, if defined in the `factor_file` column of the
-    `index`, a number of factor files.
-    1.  These files **must** be in the same directory as `index`.
-    2.  These factor files **must** also be tab-separated spreadsheets.
-    3.  All factor files that were named in `index` **must** exist.
-    4.  Each factor file **must** have these columns:
-        - `level` — Values in the dataset. This is the `levels =`
-          argument of `factor()`.
-        - `label` — Labels to apply to each level. This is the
-          `labels =` argument of `factor()`.
-        - `ordered` — Should this be created as an ordered factor? This
-          is the `ordered =` argument of `factor()`. You don’t have to
-          fill every cell in this column; an affirmative value in any of
-          its cells will make it ordered. Affirmative values are
-          case-insensitive and are `true`, `t`, `yes`, `y`, and `1`.
+- REQUIRED/MUST and MUST NOT are absolute requirements, or else the
+  software will throw errors.
+- MAY or OPTIONAL are elements that you can leave out if not needed.
+- IGNORED are things that tsv2label does not attempt to access or use.
+
+‘Variable’ and ‘column’ are used interchangeably; they refer to a column
+of a dataframe object.
+
+### File structure
+
+`tsv2label`’s functions take a `path` argument, which we will call the
+*dictionary path*. This path:
+
+- **MUST** be the path to a directory or a .zip file.
+- The *dictionary path* **MUST** contain a file called `index.tsv` or
+  `index.txt` in its root folder.
+- Subfolders in the *dictionary path* are **IGNORED**.
+- Files in the *dictionary path* that are not `.tsv` or `.txt` format
+  are **IGNORED**.
+- Files that are not called `index.tsv` or `index.txt`, and are not
+  referenced in the `factor_file` variable of `index` (see below), are
+  **IGNORED**.
+
+### Contents of `index` file
+
+- `index` **MUST** be a tab-delimited spreadsheet. You can get this from
+  Excel by saving your spreadsheet as *“Text (Tab delimited) (.txt)”*.
+  .TXT files are recognised by `tsv2label`, so you do not have to change
+  its extension.
+- `index` **MUST** have these columns: `name`, `rename`, `description`,
+  and `factor_file`.
+  - `name` — The name of a variable in your dataframe.
+    - **MUST NOT** be left blank.
+    - **MUST** exactly match a variable’s name.
+    - **MAY** be the name of a variable that doesn’t exist in the
+      dataframe. This means that you can pre-name a variable that you
+      expect to be creating in the future.
+  - `rename` — What to rename the variable.
+    - **MAY** be left blank. This means that the variable will not be
+      renamed.
+    - If not blank, **MUST** be a [syntactically valid
+      name](https://stat.ethz.ch/R-manual/R-devel/library/base/html/make.names.html)
+      in R.
+  - `description` — Description of what the variable contains or is
+    about. Also known as ‘variable labels’. Used to fill the `"label"`
+    attribute of the variable.
+    - **MAY** be left blank. This means that the variable will not be
+      described.
+  - `factor_file` — The filename of a spreadsheet in the *dictionary
+    path* that describes how the variable’s values are mapped to labels,
+    e.g. postal codes to place names. These are also known as ‘value
+    labels’. These are used to convert the variable to a Factor type.
+    - **MAY** be left blank. This means that the variable will not be
+      converted to a Factor.
+    - If not blank, **MUST** exactly match the filename of a file in the
+      *dictionary path*.
+    - All factor files that are named here **MUST** exist.
+    - **MAY** be given with or without a file extension; it is assumed
+      to point to a `.tsv` or `.txt` file.
+    - More than one `name` **MAY** share the same `factor_file`.
+
+### Contents of `factor_file` files
+
+If defined for a variable in the `factor_file` column of `index`:
+
+- **MUST** be in the *dictionary path*, and exactly match the name given
+  in the `factor_file` column.
+- **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt*
+  format.
+- **MUST** have these columns: `level`, `label`, `ordered`.
+  - `level` — Values in the variable.
+  - `label` — Labels to apply to each level.
+  - `ordered` — Should this be created as an ordered factor?
+    - **MAY** be left blank. If all cells are blank, then an unordered
+      factor will be created.
+    - To create an ordered variable, at least one cell in the column
+      **MUST** contain one of `true`, `t`, `yes`, `y`, or `1`
+      (case-insensitive).
+    - You **MAY** fill out just one cell in this column and leave the
+      rest blank.
+- The columns above are passed into the `factor()` function to do the
+  conversion, and therefore must meet the expectations of that function,
+  namely:
+  - Each `level` entry **MUST** exactly match a value in the variable.
+  - There **SHOULD** be a `level` entry for each unique value in the
+    variable.
+  - There **MUST** be a `label` for every `level`.
+  - Levels are created in the order they are listed.
