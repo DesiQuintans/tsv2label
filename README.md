@@ -87,7 +87,8 @@ The factor files control how a variable is going to be converted to a
 Factor type. What you name the file does not matter, as long as you
 write its name exactly in the `index`’s `factor_file` fields.
 
-A factor file look like this:
+Factor files must also be tab-delimited files in *.TSV* or *.TXT*
+format. A factor file looks like this:
 
 ``` r
 read.delim(system.file("extdata/poker/values_suits.tsv", package = "tsv2label")) |>
