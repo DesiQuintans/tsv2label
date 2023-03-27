@@ -50,6 +50,9 @@ factorise_with_dictionary <- function(df, path) {
     val_flist <- index_tsv[, c("name", "factor_file")]
     val_flist <- val_flist[val_flist$factor_file != "", ]
 
+    # factor_file might have been given with file extensions. Remove them so
+    # that they match up with the names of flist.
+    val_flist$factor_file <- gsub("\\.(tsv|txt)$", "", val_flist$factor_file)
 
     # It's likely that several columns will use the same value file; I should
     # only load each file once, and label all of those columns together.
