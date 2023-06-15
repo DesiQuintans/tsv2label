@@ -21,7 +21,7 @@
 #' # An unlabelled dataset that is built-into this package.
 #' my_poker <- poker
 #'
-#' # [system.file()] gives the path to a dictionary for this dataset that is also
+#' # system.file() gives the path to a dictionary for this dataset that is also
 #' # built-into this package.
 #' factorise_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 #'

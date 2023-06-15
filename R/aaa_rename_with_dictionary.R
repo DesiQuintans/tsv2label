@@ -59,7 +59,7 @@ closure.tsv_to_colnames <- function(orig_to_new) {
 #' # An unlabelled dataset that is built-into this package.
 #' my_poker <- poker
 #'
-#' # [system.file()] gives the path to a dictionary for this dataset, which is
+#' # system.file() gives the path to a dictionary for this dataset, which is
 #' also built-into this package.
 #' rename_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 #'

@@ -27,7 +27,7 @@ you to search the labels to find variables in large datasets.
 # An unlabelled dataset that is built-into this package.
 my_poker <- poker
 
-# [system.file()] gives the path to a dictionary for this dataset, which is also
+# system.file() gives the path to a dictionary for this dataset, which is also
 # built-into this package.
 describe_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 
