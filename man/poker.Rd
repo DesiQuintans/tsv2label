@@ -26,13 +26,19 @@ out where that is.
 \details{
 I chose it as example data for \code{tsv2label} because it codes a playing card's
 suit and rank as integers that need to be relabelled with their actual
-meanings. It shows how the same \code{value_file} can be used to add value label
-to many columns (e.g. labelling the 5 card ranks columns using the same
-file), or how a \code{value_file} can be dedicated to one column only (e.g.
-\code{value_hands} to label the \code{CLASS} column). I have added 2 extra columns of
-different types (\code{ID}, \code{CAT}) to show that \code{tsv2label} leaves
-them alone if no \code{value_file} is specified for them in \code{index.tsv}. I have
-also added a column with a non-syntactic name (\verb{COIN FLIP}) and a list column
-(\code{LIST_COL}) for testing.
+meanings. It shows features of \code{tsv2label} like:
+\enumerate{
+\item One \code{factor_file} can be applied to many columns (e.g. all 5 cards'
+ranks are named using the same \code{values_ranks} file).
+\item A \code{factor_file} can also be dedicated to one column only (e.g. \code{value_hands}
+factorises the \code{CLASS} column only).
+\item Factor conversion is not performed on columns without a named \code{factor_file}
+(e.g. \code{ID}, \code{CAT}).
+\item Columns are not renamed if they have no \code{rename} value (e.g. \code{CAT}).
+\item A data dictionary can contain columns that don't exist in the data (e.g. \code{not_exist}).
+\item A data dictionary can omit columns that \strong{do} exist in the data (e.g. \code{LIST_COL}).
+\item Non-syntactic names are allowed (e.g. \verb{COIN FLIP}).
+\item List columns are supported (e.g. \code{LIST_COL}).
+}
 }
 \keyword{datasets}

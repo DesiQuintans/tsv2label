@@ -9,14 +9,19 @@
 #'
 #' I chose it as example data for `tsv2label` because it codes a playing card's
 #' suit and rank as integers that need to be relabelled with their actual
-#' meanings. It shows how the same `value_file` can be used to add value label
-#' to many columns (e.g. labelling the 5 card ranks columns using the same
-#' file), or how a `value_file` can be dedicated to one column only (e.g.
-#' `value_hands` to label the `CLASS` column). I have added 2 extra columns of
-#' different types (`ID`, `CAT`) to show that `tsv2label` leaves
-#' them alone if no `value_file` is specified for them in `index.tsv`. I have
-#' also added a column with a non-syntactic name (`COIN FLIP`) and a list column
-#' (`LIST_COL`) for testing.
+#' meanings. It shows features of `tsv2label` like:
+#'
+#' 1. One `factor_file` can be applied to many columns (e.g. all 5 cards'
+#'    ranks are named using the same `values_ranks` file).
+#' 2. A `factor_file` can also be dedicated to one column only (e.g. `value_hands`
+#'    factorises the `CLASS` column only).
+#' 3. Factor conversion is not performed on columns without a named `factor_file`
+#'    (e.g. `ID`, `CAT`).
+#' 4. Columns are not renamed if they have no `rename` value (e.g. `CAT`).
+#' 5. A data dictionary can contain columns that don't exist in the data (e.g. `not_exist`).
+#' 6. A data dictionary can omit columns that **do** exist in the data (e.g. `LIST_COL`).
+#' 7. Non-syntactic names are allowed (e.g. `COIN FLIP`).
+#' 8. List columns are supported (e.g. `LIST_COL`).
 #'
 #' @format ## `poker`
 #' A data frame with 100 rows and 15 columns.
