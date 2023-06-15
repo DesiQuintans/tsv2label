@@ -44,7 +44,7 @@ afterwards.
 my_poker <- poker
 
 # system.file() gives the path to a dictionary for this dataset, which is
-also built-into this package.
+# also built-into this package.
 rename_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 
 ##  head(colnames(my_poker)):
