@@ -1,7 +1,7 @@
 Labelling datasets using a data dictionary, with `tsv2label`
 ================
 Desi Quintans
-2023-06-15
+2023-06-16
 
 ------------------------------------------------------------------------
 
@@ -503,18 +503,19 @@ If defined for a variable in the `factor_file` column of `index`:
   in the `factor_file` column.
 - **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt*
   format.
-- **MUST** have these columns in any order: `levels`, `labels`,
-  `ordered`.
+- **MUST** have these columns in any order: `levels`, `labels`.
   - `levels` — Values in the variable.
   - `labels` — Labels to apply to each level.
+- **MAY** have this column in any order: `ordered`.
   - `ordered` — Should this be created as an ordered factor?
-    - **MAY** be left blank. If all cells are blank, then an unordered
-      factor will be created.
-    - To create an ordered variable, at least one cell in the column
-      **MUST** contain one of `true`, `t`, `yes`, `y`, or `1`
-      (case-insensitive).
-    - You **MAY** fill out just one cell in this column and leave the
-      rest blank.
+    - If the column is missing, an unordered factor is created.
+    - If the column is present but all cells are blank, an unordered
+      factor is created.
+    - An ordered factor is created if the column is present **and** at
+      least one cell in the column contains one of (case-insensitive)
+      `true`, `t`, `yes`, `y`, or `1`.
+      - You **MAY** fill out just one cell in this column and leave the
+        rest blank.
 - The columns above are passed into the `factor()` function to do the
   conversion, and therefore must meet the expectations of that function,
   namely:

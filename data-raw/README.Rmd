@@ -260,13 +260,15 @@ If defined for a variable in the `factor_file` column of `index`:
 
 -   **MUST** be in the *dictionary path*, and exactly match the name given in the `factor_file` column.
 -   **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt* format.
--   **MUST** have these columns in any order: `levels`, `labels`, `ordered`.
+-   **MUST** have these columns in any order: `levels`, `labels`.
     -   `levels` --- Values in the variable.
     -   `labels` --- Labels to apply to each level.
+-   **MAY** have this column in any order: `ordered`.
     -   `ordered` --- Should this be created as an ordered factor?
-        -   **MAY** be left blank. If all cells are blank, then an unordered factor will be created.
-        -   To create an ordered variable, at least one cell in the column **MUST** contain one of `true`, `t`, `yes`, `y`, or `1` (case-insensitive).
-        -   You **MAY** fill out just one cell in this column and leave the rest blank.
+        -   If the column is missing, an unordered factor is created.
+        -   If the column is present but all cells are blank, an unordered factor is created.
+        -   An ordered factor is created if the column is present **and** at least one cell in the column contains one of (case-insensitive) `true`, `t`, `yes`, `y`, or `1`.
+            -   You **MAY** fill out just one cell in this column and leave the rest blank.
 -   The columns above are passed into the `factor()` function to do the conversion, and therefore must meet the expectations of that function, namely:
     -   Each `level` entry **MUST** exactly match a value in the variable.
     -   There **SHOULD** be a `level` entry for each unique value in the variable. Values without a matching `level` entry will be coded as `NA` by `factor()`.

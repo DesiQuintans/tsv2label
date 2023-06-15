@@ -83,7 +83,13 @@ factorise_with_dictionary <- function(df, path) {
 
         # 2. Get the value file
         vfile      <- get_file(path, flist[factor_file])
-        is_ordered <- any(c("true", "t", "yes", "y", "1") %in% tolower(vfile$ordered))
+
+        if (is.null(vfile$ordered)) {
+            # The ordered column doesn't exist, so make an unordered factor
+            is_ordered <- FALSE
+        } else {
+            is_ordered <- any(c("true", "t", "yes", "y", "1") %in% tolower(vfile$ordered))
+        }
 
         # 3. Turn the columns into Factors.
         code <- sprintf('%1$s[["%2$s"]] <- factor(%1$s[["%2$s"]], levels = %3$s, labels = %4$s, ordered = %5$s)',
