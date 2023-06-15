@@ -49,8 +49,11 @@ describe_with_dictionary <- function(df, path) {
     index_tsv <- index_tsv[index_tsv$description != "", ]
 
     # 5. Write code
-    # attr(df$col, "label") <- "new label"
-    code <- sprintf('attr(%s$%s, "label") <- "%s"',
+    # attr(df[["col"]], "label") <- "new label"
+    # `[[` is used to handle non-syntactic names.
+    # Note that it must be `[[` and not `[` in order to apply the attribute to
+    # the underlying vector.
+    code <- sprintf('attr(%s[["%s"]], "label") <- "%s"',
                     df_char, index_tsv$name, index_tsv$description)
 
     # 6. Evaluate that code in the global environment.

@@ -70,7 +70,7 @@ factorise_with_dictionary <- function(df, path) {
         # NOTE: Whatever types these columns started in, the fact that they are
         # labelled means that they are categorical and therefore their true type
         # in R should be Factor, which is what this function will turn them into.
-        global_eval(sprintf('%1$s$%2$s <- as.character(%1$s$%2$s)',
+        global_eval(sprintf('%1$s[["%2$s"]] <- as.character(%1$s[["%2$s"]])',
                             df_char, cols))
 
         # 2. Get the value file
@@ -78,7 +78,7 @@ factorise_with_dictionary <- function(df, path) {
         is_ordered <- any(c("true", "t", "yes", "y", "1") %in% tolower(vfile$ordered))
 
         # 3. Turn the columns into Factors.
-        code <- sprintf('%1$s$%2$s <- factor(%1$s$%2$s, levels = %3$s, labels = %4$s, ordered = %5$s)',
+        code <- sprintf('%1$s[["%2$s"]] <- factor(%1$s[["%2$s"]], levels = %3$s, labels = %4$s, ordered = %5$s)',
                         df_char, cols, deparse2(vfile$level), deparse2(vfile$label),
                         is_ordered)
 
@@ -91,10 +91,10 @@ factorise_with_dictionary <- function(df, path) {
 
     for (i in seq_along(x)) {
         message(msg_fmt(
-            sprintf("Peeking at 'levels(%s$%s)', built from '%s':",
+            sprintf("Peeking at 'levels(%s[[\"%s\"]])', built from '%s':",
                     df_char, x[i], names(x[i]))
             ))
-        cat(msg_fmt(paste(global_eval(sprintf('levels(%s$%s)', df_char, x[i])), collapse = ", ")))
+        cat(msg_fmt(paste(global_eval(sprintf('levels(%s[["%s"]])', df_char, x[i])), collapse = ", ")))
         cat("\n\n")
     }
 }
