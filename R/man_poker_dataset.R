@@ -15,10 +15,11 @@
 #' `value_hands` to label the `CLASS` column). I have added 2 extra columns of
 #' different types (`ID`, `CAT`) to show that `tsv2label` leaves
 #' them alone if no `value_file` is specified for them in `index.tsv`. I have
-#' also added a column with a non-syntactic name (`COIN FLIP`) for testing.
+#' also added a column with a non-syntactic name (`COIN FLIP`) and a list column
+#' (`LIST_COL`) for testing.
 #'
 #' @format ## `poker`
-#' A data frame with 100 rows and 14 columns.
+#' A data frame with 100 rows and 15 columns.
 #'
 #' @source <https://archive.ics.uci.edu/ml/datasets/Poker+Hand>
 #' @md

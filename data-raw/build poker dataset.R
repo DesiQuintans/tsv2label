@@ -19,4 +19,6 @@ poker <-
                             "logical"),
              check.names = FALSE)
 
+poker$LIST_COL <- replicate(100, list(sample(letters, 3)))
+
 usethis::use_data(poker, overwrite = TRUE)

@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{poker}}{
 
-A data frame with 100 rows and 14 columns.
+A data frame with 100 rows and 15 columns.
 }
 }
 \source{
@@ -32,6 +32,7 @@ file), or how a \code{value_file} can be dedicated to one column only (e.g.
 \code{value_hands} to label the \code{CLASS} column). I have added 2 extra columns of
 different types (\code{ID}, \code{CAT}) to show that \code{tsv2label} leaves
 them alone if no \code{value_file} is specified for them in \code{index.tsv}. I have
-also added a column with a non-syntactic name (\verb{COIN FLIP}) for testing.
+also added a column with a non-syntactic name (\verb{COIN FLIP}) and a list column
+(\code{LIST_COL}) for testing.
 }
 \keyword{datasets}
