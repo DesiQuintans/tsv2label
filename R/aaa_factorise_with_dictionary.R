@@ -74,15 +74,16 @@ factorise_with_dictionary <- function(df, path) {
         cols        <- unlist(each_file[i], use.names = FALSE)  # The columns
 
         # 1. Convert the receiving columns to Character, to match the value file
-        #    which is always read in as Character.
+        #    which is always read in as Character. Also trim whitespace from them.
         # NOTE: Whatever types these columns started in, the fact that they are
         # labelled means that they are categorical and therefore their true type
         # in R should be Factor, which is what this function will turn them into.
-        global_eval(sprintf('%1$s[["%2$s"]] <- as.character(%1$s[["%2$s"]])',
+        global_eval(sprintf('%1$s[["%2$s"]] <- trimws(as.character(%1$s[["%2$s"]]))',
                             df_char, cols))
 
         # 2. Get the value file
-        vfile      <- get_file(path, flist[factor_file])
+        vfile <- get_file(path, flist[factor_file])
+        vfile <- as.data.frame(lapply(vfile, trimws))  # as.data.frame() is important for rowwise filtering below.
 
         # Should the factor be an ordered one?
         if (is.null(vfile$ordered)) {
