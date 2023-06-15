@@ -2,95 +2,44 @@
 title: "Labelling datasets using a data dictionary, with `tsv2label`"
 author: "Desi Quintans"
 date: "`r Sys.Date()`"
-output: github_document
+output: 
+    github_document:
+        toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+------------------------------------------------------------------------
+
 # Installation
 
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
-remotes::install_github("DesiQuintans/tsv2label")
 # CRAN coming soon
-```
 
-```{r}
-library(tsv2label)
+# Install from GitHub for up-to-date changes
+remotes::install_github("DesiQuintans/tsv2label")
+
+library(tsv2label)  # Load it up!
 ```
 
 If you've ever tried to find your way through a dataset with cryptic names and values, you've probably made a spreadsheet that had columns like: 1) variable name, 2) what it contains, 3) what its types are, especially if it looks like they are coding for something.
 
 `tsv2label` lets you use such a spreadsheet to label, rename, and factorise your dataset automatically; especially helpful if your dataset is hundreds of columns wide.
 
-It uses tab-delimited spreadsheets which are editable in Excel; easy to assemble by copying and pasting from existing messy data dictionaries; can be cleaned and reshaped with regular expressions; and can be tracked and diffed with version control software.
+It uses tab-delimited spreadsheets which are editable in Excel; easy to assemble by copying and pasting from existing messy data dictionaries; can be cleaned and reshaped with regular expressions and multiple cursors; and can be tracked and diffed with version control software.
 
 ![](data-raw/tsv2label.png)
 
 ------------------------------------------------------------------------
 
-## What the package expects as a data dictionary
-
-A data dictionary is a directory or .zip file with no subfolders, which contains tab-delimited spreadsheets in either *.TSV* or *.TXT* format.
-
-The Appendix below has the [formal definition of a dictionary](#formal-definition-of-a-tsv2label-data-dictionary), but the easiest way to understand how a data dictionary is shaped is by looking at the one that is included with `tsv2label`. You can find where it is installed on your computer by running:
-
-```{r eval=FALSE}
-library(tsv2label)
-
-system.file("extdata/poker", package = "tsv2label")
-```
-
-### Index file
-
-The central file is called `index`; it must always exist, and must be a tab-delimited file in *.TSV* or *.TXT* format.
-
-```{r}
-read.delim(system.file("extdata/poker/index.tsv", package = "tsv2label")) |>
-  head()
-```
-
-It must have these four columns, in any order:
-
-1.  `name` is the name of a column/variable in your dataset.
-2.  `rename` is what to rename the column. Leave it blank if unneeded.
-3.  `description` is a human-readable description of what the variable is about.
-4.  `factor_file` is used to convert categorical data into Factors. It has the filename (with or without file extension) of a spreadsheet in the same folder that describes how values are mapped to labels, e.g. postal codes to place names. Leave it blank if unneeded. As you can see, many variables can use the same `factor_file`.
-
-Any other columns in the file will be ignored.
-
-### Factor files
-
-The factor files control how a variable is going to be converted to a Factor type. What you name the file does not matter, as long as you write its name exactly in the `index`'s `factor_file` fields.
-
-Factor files must also be tab-delimited files in *.TSV* or *.TXT* format. A factor file looks like this:
-
-```{r}
-read.delim(system.file("extdata/poker/values_suits.tsv", package = "tsv2label")) |>
-  head()
-```
-
-This file has three columns:
-
-1.  `level` contains the raw values in your dataset. It is used as the levels of the new factor.
-2.  `label` contains the label to apply to each level.
-3.  `ordered` controls whether this will be created as an ordered factor. An affirmative value (case-insensitive: `true`, `t`, `yes`, `y`, or `1`) in *any* cell of this column will make it an ordered factor.
-
-These columns are named after their matching arguments in `factor()`:
-
-```{r}
-str(factor)
-```
-
-------------------------------------------------------------------------
-
-# Functions
+# List of functions
 
 `tsv2label` gives you four main functions:
 
 | Function                              | Description                            |
-|:----------------------------------|:-----------------------------------|
+|:--------------------------------------|:---------------------------------------|
 | `factorise_with_dictionary(df, path)` | Convert variables to Factor            |
 | `describe_with_dictionary(df, path)`  | Add descriptions (labels) to variables |
 | `rename_with_dictionary(df, path)`    | Rename variables                       |
@@ -99,13 +48,24 @@ str(factor)
 
 ## Order of operations {#order}
 
-When `factorise_with_dictionary()` converts variables to Factors, any labels associated with them are lost. When `rename_with_dictionary()` renames variables, `factorise_with_dictionary()` and `describe_with_dictionary()` can no longer find and act on them.
+The order that these functions should be applied is:
 
-This means that operations should be done in the order given above: First factorising, then describing, then renaming. If needed, `revert_colnames()` can undo a renaming.
+1. `factorise_with_dictionary()`
+2. `describe_with_dictionary()`
+3. `rename_with_dictionary()`
+4. `revert_colnames()`
+
+This is because when `factorise_with_dictionary()` converts variables to Factors, any labels associated with them are lost. And when `rename_with_dictionary()` renames variables, `factorise_with_dictionary()` and `describe_with_dictionary()` can no longer find and act on them.
 
 ------------------------------------------------------------------------
 
 # Example: Describing the Poker Hands dataset
+
+## The raw data
+
+```{r}
+library(tsv2label)
+```
 
 `tsv2label` ships with a built-in dataset called `poker`, which is a subset of the [Poker Hand](https://archive.ics.uci.edu/ml/datasets/Poker+Hand) dataset with some added columns:
 
@@ -113,111 +73,144 @@ This means that operations should be done in the order given above: First factor
 head(poker)
 ```
 
-As shown before, `tsv2label` also ships with the data dictionary for this dataset, in both .zip and folder forms:
+There are many coded values here that need to be converted to Factors. The column names are cryptic, and the dataset has no variable labels which would aid in exploration, especially when using a label-aware exploration package like [`siftr`](https://github.com/DesiQuintans/siftr/).
+
+Luckily, `tsv2label` ships with the data dictionary for this dataset, in both .ZIP and folder forms (`tsv2label` can read directly from both):
 
 ```{r}
-list.files(system.file("extdata", package = "tsv2label"))
+# system.file() looks inside tsv2label's installed location to see the files 
+# that came with it. 
 
-list.files(system.file("extdata/poker", package = "tsv2label"))
+system.file("extdata", package = "tsv2label") |> list.files()
 ```
 
-```{r echo=FALSE}
-`index.tsv` <-
-  system.file("extdata/poker/index.tsv", package = "tsv2label") |>
-  read.delim()
 
-`values_hands` <-
-  system.file("extdata/poker/values_hands.tsv", package = "tsv2label") |>
-  read.delim()
+## What does a dictionary look like?
 
-`values_ranks` <-
-  system.file("extdata/poker/values_ranks.tsv", package = "tsv2label") |>
-  read.delim()
-
-
-`values_suits` <-
-  system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |>
-  read.delim()
-```
+A data dictionary is a directory or .ZIP file with no subfolders, which contains tab-delimited spreadsheets in either *.TSV* or *.TXT* format.
 
 ```{r}
-index.tsv
+system.file("extdata/poker", package = "tsv2label") |> list.files()
 ```
+
+The Appendix below has the [formal definition of a dictionary](#formal-definition-of-a-tsv2label-data-dictionary), but the easiest way to understand what should be in a dictionary is by looking at `poker`'s.
+
+### Index file
+
+The central file is called `index`; it must always exist, and must be a tab-delimited file in *.TSV* or *.TXT* format.
 
 ```{r}
-values_hands
+system.file("extdata/poker/index.tsv", package = "tsv2label") |> read.delim()
 ```
+
+It must have these four columns in any order (all other columns are ignored):
+
+1.  `name` is the name of a column/variable in your dataset.
+2.  `rename` is what to rename the column. Leave it blank if unneeded.
+3.  `description` is a human-readable description of what the variable is about. Leave it blank if unneeded.
+4.  `factor_file` is used to convert categorical data into Factors. It has the filename (with or without file extension) of a spreadsheet in the same folder that describes how levels are mapped to labels, e.g. postal codes to suburb names. As you can see, one `factor_file` can be applied to many columns.
+
+
+### Factor files
+
+The factor files control how a variable is going to be converted to a Factor type. Factor files must also be tab-delimited files in *.TSV* or *.TXT* format.
 
 ```{r}
-values_ranks
+system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.delim()
 ```
+
+It must have these three columns in any order (other columns are ignored):
+
+1.  `levels` contains the raw values in your dataset. It is used as the levels of the new factor.
+2.  `labels` contains the label to apply to each level.
+3.  `ordered` controls whether this will be created as an ordered factor. An affirmative value (case-insensitive: `true`, `t`, `yes`, `y`, or `1`) in *any* cell of this column will make it an ordered factor.
+
+The columns are named after their matching arguments in `factor()`:
 
 ```{r}
-values_suits
+str(factor)
 ```
 
-### Preparation
 
-Let's make a copy of `poker` that we can label.
+## Reading a dictionary
 
-```{r}
-poker_copy <- poker
+`tsv2label` can read dictionaries from both folders and .ZIP files. The latter is particularly convenient because it lets you distribute a dictionary as a single .ZIP file.
+
+`tsv2label` functions have a `path` argument to tell them where the dictionary is:
+
+```{r eval=FALSE}
+# To read from a folder, use the path to the folder:
+factorise_with_dictionary(df = my_data, path = "C:/path/to/dictionary/folder")
+
+# To read from a .ZIP, use the path to the .ZIP (it will unzip automatically):
+factorise_with_dictionary(df = my_data, path = "C:/path/to/my_dictionary.zip")
 ```
 
-Let's also make a variable pointing to our data dictionary. For this vignette, this points to where my package is installed. Your install location will differ from mine if you run this code yourself.
-
-If you were using your own data dictionary, then this would be a path to where ever you have it on your computer.
+For this example, let's read the dictionary from the folder.
 
 ```{r}
 dictionary_dir <- system.file("extdata/poker", package = "tsv2label")
 dictionary_dir
 ```
 
-### Converting categorical variables to Factors
+If you were using your own data dictionary, then this would be a path to its location on your computer.
+
+
+## Step 1: Convert categorical variables to Factors
 
 Converting to Factor always comes first in our [order of operations](#order-of-operations).
 
 ```{r}
-# If you were using your own data dictionary, then your `path` argument would
-# point to its location on your computer.
-factorise_with_dictionary(df = poker_copy, path = dictionary_dir)
+factorise_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
-Columns S1 to C5 all had a `factor_file` associated with them in `index`, so they were all converted to Factors:
+Note that we didn't have to assign the result to a name; all `tsv2label` functions avoid expensive copying by modifying the dataframe in-place.
+
+Any column that had a `factor_file` associated with it in `index` will be converted to a Factor:
 
 ```{r}
-head(poker_copy)
+head(poker)
 ```
 
-### Adding labels/descriptions to columns
+## Step 2: Add labels/descriptions to variables
 
-Adding variable descriptions comes next. These are used by many R packages to add extra functionality. For example, RStudio can display labels in `View()`, the [`gtsummary` package](https://github.com/ddsjoberg/gtsummary) uses the label attribute to name variables in its output tables where possible, and my [`sift` package](https://github.com/DesiQuintans/sift/) allows you to search the labels (among all other text in each variable) to find the right variable in large datasets.
+Adding variable labels comes next. These are used by many R packages to add extra functionality. For example, RStudio can display labels in `View()`, the [`gtsummary` package](https://github.com/ddsjoberg/gtsummary) uses the label attribute to name variables in its output tables where possible, and my [`siftr` package](https://github.com/DesiQuintans/siftr/) allows you to search the labels (among all other text in each variable) to find the right variable in large datasets.
 
 ```{r}
-describe_with_dictionary(df = poker_copy, path = dictionary_dir)
+describe_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
-All columns had a `description` in `index`, so all of them have a new `"label"` attribute:
+All columns except `LIST_COL` (which was not in the dictionary) had a `description` in `index`, so all of them have a new `"label"` attribute:
 
 ```{r}
-str(poker_copy, 1)
+Map(\(x) attr(x, "label"), poker)
 ```
 
-### Renaming variables
+## Step 3: Rename variables
 
 Finally, we can rename the variables based on the `rename` column in `index`.
 
 ```{r}
-rename_with_dictionary(df = poker_copy, path = dictionary_dir)
+rename_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
-The `FLIP` column did *not* have a `rename` associated with it in `index`, so it was not renamed.
+The `CAT` column did *not* have a `rename` associated with it in `index`, so it was not renamed. The `LIST_COL` column was not in the dictionary at all, so it is also unchanged.
 
 ```{r}
-colnames(poker_copy)
+colnames(poker)
 ```
 
+You can also revert the names, which is useful if you make changes to the data dictionary and want to go back to Step 1.
+
+```{r}
+revert_colnames(df = poker, path = dictionary_dir)
+
+colnames(poker)
+```
+
+
 ------------------------------------------------------------------------
+
 
 # Appendix
 
@@ -235,7 +228,7 @@ The keywords **REQUIRED/MUST**, **MUST NOT**, and **MAY/OPTIONAL** are interpret
 
 `tsv2label`'s functions take a `path` argument, which we will call the *dictionary path*. This path:
 
--   **MUST** be the path to a directory or a .zip file.
+-   **MUST** be the path to a directory or a .ZIP file.
 -   The *dictionary path* **MUST** contain a file called `index.tsv` or `index.txt` in its root folder.
 -   Subfolders in the *dictionary path* are **IGNORED**.
 -   Files in the *dictionary path* that are not `.tsv` or `.txt` format are **IGNORED**.
@@ -267,15 +260,16 @@ If defined for a variable in the `factor_file` column of `index`:
 
 -   **MUST** be in the *dictionary path*, and exactly match the name given in the `factor_file` column.
 -   **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt* format.
--   **MUST** have these columns: `level`, `label`, `ordered`.
-    -   `level` --- Values in the variable.
-    -   `label` --- Labels to apply to each level.
+-   **MUST** have these columns in any order: `levels`, `labels`, `ordered`.
+    -   `levels` --- Values in the variable.
+    -   `labels` --- Labels to apply to each level.
     -   `ordered` --- Should this be created as an ordered factor?
         -   **MAY** be left blank. If all cells are blank, then an unordered factor will be created.
         -   To create an ordered variable, at least one cell in the column **MUST** contain one of `true`, `t`, `yes`, `y`, or `1` (case-insensitive).
         -   You **MAY** fill out just one cell in this column and leave the rest blank.
 -   The columns above are passed into the `factor()` function to do the conversion, and therefore must meet the expectations of that function, namely:
     -   Each `level` entry **MUST** exactly match a value in the variable.
-    -   There **SHOULD** be a `level` entry for each unique value in the variable.
-    -   There **MUST** be a `label` for every `level`.
+    -   There **SHOULD** be a `level` entry for each unique value in the variable. Values without a matching `level` entry will be coded as `NA` by `factor()`.
+    -   There **MUST** be a `label` for every `level`. 
+        - `label`s **MAY** be duplicated to bin different levels under the same label. 
     -   Levels are created in the order they are listed.
