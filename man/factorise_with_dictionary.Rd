@@ -28,7 +28,7 @@ decide to convert them into factors. \emph{This} package goes straight to
 converting them so that they're ready to use.
 }
 \examples{
-\dontrun{
+\donttest{
 # An unlabelled dataset that is built-into this package.
 my_poker <- poker
 

@@ -55,7 +55,7 @@ closure.tsv_to_colnames <- function(orig_to_new) {
 #' @name rename_columns
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # An unlabelled dataset that is built-into this package.
 #' my_poker <- poker
 #'

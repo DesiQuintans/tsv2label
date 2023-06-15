@@ -23,7 +23,7 @@ variables in its output tables where possible, and the \code{sift} package allow
 you to search the labels to find variables in large datasets.
 }
 \examples{
-\dontrun{
+\donttest{
 # An unlabelled dataset that is built-into this package.
 my_poker <- poker
 
