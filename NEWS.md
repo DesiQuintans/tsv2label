@@ -5,7 +5,7 @@
 
 - FIXED
     - Files with multiple extensions (e.g. "index.tsv.txt") are accounted for.
-    - 
+    - Factor files with mixed-case names are handled properly.
 
 
 
