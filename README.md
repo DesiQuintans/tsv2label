@@ -105,12 +105,12 @@ head(poker)
 ```
 
     ##   ID S1 C1 S2 C2 S3 C3 S4 C4 S5 C5 CLASS    CAT COIN FLIP LIST_COL
-    ## 1  1  1 10  1 11  1 13  1 12  1  1     9  Socks     FALSE  u, l, b
-    ## 2  2  2 11  2 13  2 10  2 12  2  1     9   Fred     FALSE  q, a, b
-    ## 3  3  3 12  3 11  3 13  3 10  3  1     9 Fluffy      TRUE  s, i, l
-    ## 4  4  4 10  4 11  4  1  4 13  4 12     9   Nala      TRUE  k, i, e
-    ## 5  5  4  1  4 13  4 12  4 11  4 10     9   Cher      TRUE  f, w, p
-    ## 6  6  1  2  1  4  1  5  1  3  1  6     8   Lily      TRUE  p, y, f
+    ## 1  1  1 10  1 11  1 13  1 12  1  1     9  Socks     FALSE  a, n, w
+    ## 2  2  2 11  2 13  2 10  2 12  2  1     9   Fred     FALSE  v, e, c
+    ## 3  3  3 12  3 11  3 13  3 10  3  1     9 Fluffy      TRUE  v, f, t
+    ## 4  4  4 10  4 11  4  1  4 13  4 12     9   Nala      TRUE  h, l, o
+    ## 5  5  4  1  4 13  4 12  4 11  4 10     9   Cher      TRUE  b, d, v
+    ## 6  6  1  2  1  4  1  5  1  3  1  6     8   Lily      TRUE  n, p, r
 
 There are many coded values here that need to be converted to Factors.
 The column names are cryptic, and the dataset has no variable labels
@@ -139,8 +139,8 @@ contains tab-delimited spreadsheets in either *.TSV* or *.TXT* format.
 system.file("extdata/poker", package = "tsv2label") |> list.files()
 ```
 
-    ## [1] "index.tsv"            "values coin flip.tsv" "values_hands.tsv"    
-    ## [4] "values_ranks.tsv"     "values_suits.tsv"
+    ## [1] "index.tsv"        "values_flip.tsv"  "values_hands.tsv" "values_ranks.tsv"
+    ## [5] "values_suits.tsv"
 
 The Appendix below has the [formal definition of a
 dictionary](#formal-definition-of-a-tsv2label-data-dictionary), but the
@@ -156,21 +156,21 @@ tab-delimited file in *.TSV* or *.TXT* format.
 system.file("extdata/poker/index.tsv", package = "tsv2label") |> read.delim()
 ```
 
-    ##         name          rename            description      factor_file
-    ## 1         ID      random_int  Some random integers.                 
-    ## 2         S1         c1_suit        Suit of card #1     values_suits
-    ## 3         C1         c1_rank        Rank of card #1     values_ranks
-    ## 4         S2         c2_suit        Suit of card #2     values_suits
-    ## 5         C2         c2_rank        Rank of card #2     values_ranks
-    ## 6         S3         c3_suit        Suit of card #3     values_suits
-    ## 7         C3         c3_rank        Rank of card #3     values_ranks
-    ## 8         S4         c4_suit        Suit of card #4     values_suits
-    ## 9         C4         c4_rank        Rank of card #4     values_ranks
-    ## 10        S5         c5_suit        Suit of card #5     values_suits
-    ## 11        C5         c5_rank        Rank of card #5     values_ranks
-    ## 12     CLASS hand_from_cards Poker hand (cards 1-5)     values_hands
-    ## 13       CAT                      Random cat names.                 
-    ## 14 COIN FLIP       coin_flip Outcome of a coinflip. values coin flip
+    ##         name          rename            description  factor_file
+    ## 1         ID      random_int  Some random integers.             
+    ## 2         S1         c1_suit        Suit of card #1 values_suits
+    ## 3         C1         c1_rank        Rank of card #1 values_ranks
+    ## 4         S2         c2_suit        Suit of card #2 values_suits
+    ## 5         C2         c2_rank        Rank of card #2 values_ranks
+    ## 6         S3         c3_suit        Suit of card #3 values_suits
+    ## 7         C3         c3_rank        Rank of card #3 values_ranks
+    ## 8         S4         c4_suit        Suit of card #4 values_suits
+    ## 9         C4         c4_rank        Rank of card #4 values_ranks
+    ## 10        S5         c5_suit        Suit of card #5 values_suits
+    ## 11        C5         c5_rank        Rank of card #5 values_ranks
+    ## 12     CLASS hand_from_cards Poker hand (cards 1-5) values_hands
+    ## 13       CAT                      Random cat names.             
+    ## 14 COIN FLIP       coin_flip Outcome of a coinflip.  values_flip
     ## 15 not_exist                 Column not in dataset.
 
 It must have these four columns in any order (all other columns are
@@ -196,11 +196,11 @@ Factor type. Factor files must also be tab-delimited files in *.TSV* or
 system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.delim()
 ```
 
-    ##   level    label ordered
-    ## 1     1   Hearts   FALSE
-    ## 2     2   Spades      NA
-    ## 3     3 Diamonds      NA
-    ## 4     4    Clubs      NA
+    ##   levels   labels ordered
+    ## 1      1   Hearts   FALSE
+    ## 2      2   Spades      NA
+    ## 3      3 Diamonds      NA
+    ## 4      4    Clubs      NA
 
 It must have these three columns in any order (other columns are
 ignored):
@@ -260,8 +260,7 @@ operations](#order-of-operations).
 factorise_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
-    ##   Peeking at 'levels(poker[["COIN FLIP"]])', built from 'values coin
-    ##   flip':
+    ##   Peeking at 'levels(poker[["COIN FLIP"]])', built from 'values_flip':
 
     ##   Heads, Tails
 
@@ -296,12 +295,12 @@ head(poker)
     ## 5  5    Clubs   Ace    Clubs King    Clubs Queen    Clubs  Jack    Clubs    10
     ## 6  6   Hearts     2   Hearts    4   Hearts     5   Hearts     3   Hearts     6
     ##            CLASS    CAT COIN FLIP LIST_COL
-    ## 1    Royal flush  Socks     Tails  u, l, b
-    ## 2    Royal flush   Fred     Tails  q, a, b
-    ## 3    Royal flush Fluffy     Heads  s, i, l
-    ## 4    Royal flush   Nala     Heads  k, i, e
-    ## 5    Royal flush   Cher     Heads  f, w, p
-    ## 6 Straight flush   Lily     Heads  p, y, f
+    ## 1    Royal flush  Socks     Tails  a, n, w
+    ## 2    Royal flush   Fred     Tails  v, e, c
+    ## 3    Royal flush Fluffy     Heads  v, f, t
+    ## 4    Royal flush   Nala     Heads  h, l, o
+    ## 5    Royal flush   Cher     Heads  b, d, v
+    ## 6 Straight flush   Lily     Heads  n, p, r
 
 ## Step 2: Add labels/descriptions to variables
 
