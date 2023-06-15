@@ -28,7 +28,7 @@ list_label_files <- function(path) {
     # Standardising the names to lower case here because it seems safer than
     # having to account for people getting capitalisation exactly right in their
     # index.tsv's 'value_file' column.
-    names(flist) <- tolower(gsub("\\.(tsv|txt)$", "", flist))
+    names(flist) <- tolower(gsub("(\\.(tsv|txt))+$", "", flist))
 
     if ("index" %in% names(flist) == FALSE) {
         stop(stop_fmt("'", path, "' does not contain an 'index.tsv' or

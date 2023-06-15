@@ -1,5 +1,14 @@
 # CHANGELOG
 
+
+## In-development version
+
+- FIXED
+    - Files with multiple extensions (e.g. "index.tsv.txt") are accounted for.
+    - 
+
+
+
 ## 0.2.0
 
 - FIXED
@@ -13,6 +22,8 @@
     - Add a column with a non-syntactic name (`COIN FLIP`) to the built-in `poker` dataset. 
     - Add a list column (`LIST_COL`) to the built-in `poker` dataset. Closes <https://github.com/DesiQuintans/tsv2label/issues/4>.
     - Updated the `poker` dictionary to include `COIN FLIP` but **not** `LIST_COL` (so that the dictionary now has both a column that is in the dictionary but not in the data (`not_exist`) as well as a column that is in the data but not in the dictionary).
+
+
 
 ## 0.1.0 (2023-03-25)
 
