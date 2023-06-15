@@ -16,6 +16,7 @@ poker <-
                             "integer",
                             "integer",
                             "character",
-                            "logical"))
+                            "logical"),
+             check.names = FALSE)
 
 usethis::use_data(poker, overwrite = TRUE)

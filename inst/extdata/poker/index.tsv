@@ -12,5 +12,5 @@ S5	c5_suit	Suit of card #5	values_suits
 C5	c5_rank	Rank of card #5	values_ranks
 CLASS	hand_from_cards	Poker hand formed by cards 1 to 5	values_hands
 CAT	random_cats	Randomly generated names for cats.	
-FLIP		Results of a simulated coinflip.	
+COIN FLIP	coin_flip	Results of a simulated coinflip.	values coin flip
 not_exist		This column doesn't exist in the dataset.	

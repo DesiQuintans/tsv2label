@@ -12,9 +12,10 @@
 #' meanings. It shows how the same `value_file` can be used to add value label
 #' to many columns (e.g. labelling the 5 card ranks columns using the same
 #' file), or how a `value_file` can be dedicated to one column only (e.g.
-#' `value_hands` to label the `CLASS` column). I have added 3 extra columns of
-#' different types (`ID`, `CAT`, and `FLIP`) to show that `tsv2label` leaves
-#' them alone if no `value_file` is specified for them in `index.tsv`.
+#' `value_hands` to label the `CLASS` column). I have added 2 extra columns of
+#' different types (`ID`, `CAT`) to show that `tsv2label` leaves
+#' them alone if no `value_file` is specified for them in `index.tsv`. I have
+#' also added a column with a non-syntactic name (`COIN FLIP`) for testing.
 #'
 #' @format ## `poker`
 #' A data frame with 100 rows and 14 columns.

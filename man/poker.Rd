@@ -29,8 +29,9 @@ suit and rank as integers that need to be relabelled with their actual
 meanings. It shows how the same \code{value_file} can be used to add value label
 to many columns (e.g. labelling the 5 card ranks columns using the same
 file), or how a \code{value_file} can be dedicated to one column only (e.g.
-\code{value_hands} to label the \code{CLASS} column). I have added 3 extra columns of
-different types (\code{ID}, \code{CAT}, and \code{FLIP}) to show that \code{tsv2label} leaves
-them alone if no \code{value_file} is specified for them in \code{index.tsv}.
+\code{value_hands} to label the \code{CLASS} column). I have added 2 extra columns of
+different types (\code{ID}, \code{CAT}) to show that \code{tsv2label} leaves
+them alone if no \code{value_file} is specified for them in \code{index.tsv}. I have
+also added a column with a non-syntactic name (\verb{COIN FLIP}) for testing.
 }
 \keyword{datasets}
