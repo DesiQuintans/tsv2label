@@ -24,8 +24,7 @@
 #' describe_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 #'
 #' ##  head() of 'label' attribute:
-#' ##  ID A bunch of random integers, added to show that columns without a
-#' ##  value_file won't get value labels.
+#' ##  ID Some random integers.
 #' ##  S1 Suit of card #1
 #' ##  C1 Rank of card #1
 #' ##  S2 Suit of card #2

@@ -36,14 +36,22 @@ my_poker <- poker
 # built-into this package.
 factorise_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 
-##    Peeking at 'levels(my_poker$CLASS)', built from 'values_hands':
-##    Nothing in hand, One pair, Two pairs, Three of a kind, Straight, Flush,
-##    Full house, Four of a kind, Straight flush, Royal flush
+##  Peeking at 'levels(my_poker[["COIN FLIP"]])', built from
+##  'values coin flip':
+##  Heads, Tails
 ##
-##    Peeking at 'levels(my_poker$C1)', built from 'values_ranks':
-##    Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King
+##  Peeking at 'levels(my_poker[["CLASS"]])', built from
+##  'values_hands':
+##  Nothing in hand, One pair, Two pairs, Three of a kind,
+##  Straight, Flush, Full house, Four of a kind, Straight
+##  flush, Royal flush
 ##
-##    Peeking at 'levels(my_poker$S1)', built from 'values_suits':
-##    Hearts, Spades, Diamonds, Clubs
+##  Peeking at 'levels(my_poker[["C1"]])', built from
+##  'values_ranks':
+##  Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King
+##
+##  Peeking at 'levels(my_poker[["S1"]])', built from
+##  'values_suits':
+##  Hearts, Spades, Diamonds, Clubs
 }
 }
