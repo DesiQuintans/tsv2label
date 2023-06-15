@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## In-development version
+## GitHub-installed in-development version
+
+- ADDED
+    - Optional `exclude` column in factor files, which lets you exclude a level/label from the final factor (i.e. turn it into `NA`) by setting the value of `exclude` to (case-insensitive) `true`, `t`, `yes`, `y`, or `1`. Previously, `NA`ing levels was done by omitting them from the factor file entirely. This lets you keep the level in the dictionary for completeness and transparency.
 
 - FIXED
     - Files with multiple extensions (e.g. "index.tsv.txt") are accounted for.

@@ -202,16 +202,22 @@ system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.del
     ## 3      3 Diamonds      NA
     ## 4      4    Clubs      NA
 
-It must have these three columns in any order (other columns are
-ignored):
+It must have these two columns in any order:
 
 1.  `levels` contains the raw values in your dataset. It is used as the
     levels of the new factor.
 2.  `labels` contains the label to apply to each level.
+
+Another two columns are optional, and can be presented in any order:
+
 3.  `ordered` controls whether this will be created as an ordered
     factor. An affirmative value (case-insensitive: `true`, `t`, `yes`,
     `y`, or `1`) in *any* cell of this column will make it an ordered
     factor.
+4.  `exclude` controls whether a level is excluded from the final factor
+    (i.e. converted to `NA`). An affirmative value (case-insensitive:
+    `true`, `t`, `yes`, `y`, or `1`) in the same row as a level will
+    exclude that level.
 
 The columns are named after their matching arguments in `factor()`:
 
@@ -221,6 +227,8 @@ str(factor)
 
     ## function (x = character(), levels, labels = levels, exclude = NA, ordered = is.ordered(x), 
     ##     nmax = NA)
+
+Any other columns are ignored.
 
 ## Reading a dictionary
 
@@ -463,8 +471,10 @@ of a dataframe object.
   Excel by saving your spreadsheet as *“Text (Tab delimited) (.txt)”*.
   .TXT files are recognised by `tsv2label`, so you do not have to change
   its extension.
+
 - `index` **MUST** have these columns: `name`, `rename`, `description`,
   and `factor_file`.
+
   - `name` — The name of a variable in your dataframe.
     - **MUST NOT** be left blank.
     - **MUST** exactly match a variable’s name.
@@ -501,13 +511,18 @@ If defined for a variable in the `factor_file` column of `index`:
 
 - **MUST** be in the *dictionary path*, and exactly match the name given
   in the `factor_file` column.
+
 - **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt*
   format.
+
 - **MUST** have these columns in any order: `levels`, `labels`.
+
   - `levels` — Values in the variable.
   - `labels` — Labels to apply to each level.
-- **MAY** have this column in any order: `ordered`.
-  - `ordered` — Should this be created as an ordered factor?
+
+- **MAY** have these columns in any order: `ordered`, `exclude`.
+
+  - `ordered` — Should this factor be an ordered factor?
     - If the column is missing, an unordered factor is created.
     - If the column is present but all cells are blank, an unordered
       factor is created.
@@ -516,9 +531,18 @@ If defined for a variable in the `factor_file` column of `index`:
       `true`, `t`, `yes`, `y`, or `1`.
       - You **MAY** fill out just one cell in this column and leave the
         rest blank.
+  - `exclude` — Should this level be excluded from the factor
+    (i.e. converted to `NA`)?
+    - If the column is missing, no levels are excluded.
+    - If the column is present, any cell that contains one of
+      (case-insensitive) `true`, `t`, `yes`, `y`, or `1` will make its
+      matching `level` be excluded.
+    - Any other value (including blanks) will keep the level.
+
 - The columns above are passed into the `factor()` function to do the
   conversion, and therefore must meet the expectations of that function,
   namely:
+
   - Each `level` entry **MUST** exactly match a value in the variable.
   - There **SHOULD** be a `level` entry for each unique value in the
     variable. Values without a matching `level` entry will be coded as
