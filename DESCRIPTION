@@ -1,7 +1,7 @@
 Package: tsv2label
 Type: Package
 Title: Factorise, Label, and Rename Datasets Using Plain Text Data Dictionaries
-Version: 0.2.0
+Version: 0.2.1
 Author: Desi Quintans
 Maintainer: Desi Quintans <science@desiquintans.com>
 Description: Analysts know that datasets can come with cryptic column names, and 
