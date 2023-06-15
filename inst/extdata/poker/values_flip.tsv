@@ -1,3 +1,3 @@
-level	label	ordered
+levels	labels	ordered
 TRUE	Heads	FALSE
 FALSE	Tails

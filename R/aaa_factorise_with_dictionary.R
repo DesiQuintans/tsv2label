@@ -79,7 +79,7 @@ factorise_with_dictionary <- function(df, path) {
 
         # 3. Turn the columns into Factors.
         code <- sprintf('%1$s[["%2$s"]] <- factor(%1$s[["%2$s"]], levels = %3$s, labels = %4$s, ordered = %5$s)',
-                        df_char, cols, deparse2(vfile$level), deparse2(vfile$label),
+                        df_char, cols, deparse2(vfile$levels), deparse2(vfile$labels),
                         is_ordered)
 
         global_eval(code)
