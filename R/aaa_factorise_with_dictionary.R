@@ -25,6 +25,11 @@
 #' # built-into this package.
 #' factorise_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 #'
+#' ##  (1/4)  Using 'values_flip' for COIN FLIP.
+#' ##  (2/4)  Using 'values_hands' for CLASS.
+#' ##  (3/4)  Using 'values_ranks' for C1, C2, C3, C4, C5.
+#' ##  (4/4)  Using 'values_suits' for S1, S2, S3, S4, S5.
+#' ##
 #' ##  Peeking at 'levels(my_poker[["COIN FLIP"]])', built from
 #' ##  'values coin flip':
 #' ##  Heads, Tails
@@ -69,9 +74,20 @@ factorise_with_dictionary <- function(df, path) {
     #   contents = character vector of column names using this value file
     each_file <- tapply(val_flist$name, val_flist$factor_file, unique)
 
+    # Variables used for the status updates
+    num_factorfiles <- length(each_file)
+    count_width <- nchar(num_factorfiles)
+
+    # "  (  1/100)    Using 'my_factor_file' for col1, col2, col3."
+    message_str <- paste0("  (%0", count_width, "i/", num_factorfiles, ")  Using '%s' for %s.")
+
     for (i in seq_along(each_file)) {
         factor_file <- names(each_file[i])                      # The factor file
         cols        <- unlist(each_file[i], use.names = FALSE)  # The columns
+
+        # 0. Tell the user which file is being applied (so that they know something
+        # is happening).
+        message(sprintf(message_str, i, factor_file, paste(cols, collapse = ", ")))
 
         # 1. Convert the receiving columns to Character, to match the value file
         #    which is always read in as Character. Also trim whitespace from them.
@@ -109,6 +125,8 @@ factorise_with_dictionary <- function(df, path) {
     # Preview the change
     # Here's up to 6 columns, one from each value file.
     x <- utils::head(sapply(each_file, utils::head, 1))
+
+    cat("\n")
 
     for (i in seq_along(x)) {
         message(msg_fmt(

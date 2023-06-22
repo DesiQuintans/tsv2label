@@ -268,6 +268,11 @@ operations](#order-of-operations).
 factorise_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
+    ##   (1/4)	Using 'values_flip' for COIN FLIP.
+    ##   (2/4)	Using 'values_hands' for CLASS.
+    ##   (3/4)	Using 'values_ranks' for C1, C2, C3, C4, C5.
+    ##   (4/4)	Using 'values_suits' for S1, S2, S3, S4, S5.
+
     ##   Peeking at 'levels(poker[["COIN FLIP"]])', built from 'values_flip':
 
     ##   Heads, Tails

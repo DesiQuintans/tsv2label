@@ -36,6 +36,11 @@ my_poker <- poker
 # built-into this package.
 factorise_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2label"))
 
+##  (1/4)  Using 'values_flip' for COIN FLIP.
+##  (2/4)  Using 'values_hands' for CLASS.
+##  (3/4)  Using 'values_ranks' for C1, C2, C3, C4, C5.
+##  (4/4)  Using 'values_suits' for S1, S2, S3, S4, S5.
+##
 ##  Peeking at 'levels(my_poker[["COIN FLIP"]])', built from
 ##  'values coin flip':
 ##  Heads, Tails
