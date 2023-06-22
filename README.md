@@ -1,7 +1,7 @@
 Labelling datasets using a data dictionary, with `tsv2label`
 ================
 Desi Quintans
-2023-06-16
+2023-06-22
 
 ------------------------------------------------------------------------
 
@@ -314,6 +314,13 @@ head(poker)
     ## 4    Royal flush   Nala     Heads  h, l, o
     ## 5    Royal flush   Cher     Heads  b, d, v
     ## 6 Straight flush   Lily     Heads  n, p, r
+    
+
+In real-world conditions, factorising variables from a data dictionary may produce unused factor levels. For example, imagine encoding a variable called `country_of_residence` into a factor using a dictionary of hundreds of countries, but everyone in your dataset resides in Australia. If you want to remove these unused levels, it's an easy one-line operation:
+
+``` r
+poker <- droplevels(poker)
+```
 
 ## Step 2: Add labels/descriptions to variables
 

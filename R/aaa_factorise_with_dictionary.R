@@ -9,12 +9,19 @@
 #' decide to convert them into factors. _This_ package goes straight to
 #' converting them so that they're ready to use.
 #'
+#' Factorising from a dictionary can produce a large number of unused factor
+#' levels, e.g. converting `country_of_residence` to a factor using a dictionary
+#' of hundreds of countries, but your dataset only contains people from Australia.
+#' Use the base function [droplevels()] to remove unused levels (see Examples).
+#'
 #' @param df (Dataframe) A dataframe to label.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'      either a folder or a .zip file. See [expected_files] for more info.
 #'
 #' @return Mutates `df` in-place in the global environment.
 #' @export
+#'
+#' @seealso [droplevels()]
 #'
 #' @examples
 #' \donttest{
@@ -47,6 +54,9 @@
 #' ##  Peeking at 'levels(my_poker[["S1"]])', built from
 #' ##  'values_suits':
 #' ##  Hearts, Spades, Diamonds, Clubs
+#'
+#' # Drop all unused levels from every column of a dataframe
+#' my_poker <- droplevels(my_poker)
 #' }
 #' @md
 factorise_with_dictionary <- function(df, path) {

@@ -27,6 +27,12 @@ attribute called \code{"labels"} (note plural) as a temporary measure until you
 decide to convert them into factors. \emph{This} package goes straight to
 converting them so that they're ready to use.
 }
+\details{
+Factorising from a dictionary can produce a large number of unused factor
+levels, e.g. converting \code{country_of_residence} to a factor using a dictionary
+of hundreds of countries, but your dataset only contains people from Australia.
+Use the base function \code{\link[=droplevels]{droplevels()}} to remove unused levels (see Examples).
+}
 \examples{
 \donttest{
 # An unlabelled dataset that is built-into this package.
@@ -58,5 +64,11 @@ factorise_with_dictionary(my_poker, system.file("extdata/poker", package = "tsv2
 ##  Peeking at 'levels(my_poker[["S1"]])', built from
 ##  'values_suits':
 ##  Hearts, Spades, Diamonds, Clubs
+
+# Drop all unused levels from every column of a dataframe
+my_poker <- droplevels(my_poker)
 }
+}
+\seealso{
+\code{\link[=droplevels]{droplevels()}}
 }

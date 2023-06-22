@@ -178,6 +178,13 @@ Any column that had a `factor_file` associated with it in `index` will be conver
 head(poker)
 ```
 
+In real-world conditions, factorising variables from a data dictionary may produce unused factor levels. For example, imagine encoding a variable called `country_of_residence` into a factor using a dictionary of hundreds of countries, but everyone in your dataset resides in Australia. If you want to remove these unused levels, it's an easy one-line operation:
+
+```{r eval=FALSE}
+poker <- droplevels(poker)
+```
+
+
 ## Step 2: Add labels/descriptions to variables
 
 Adding variable labels comes next. These are used by many R packages to add extra functionality. For example, RStudio can display labels in `View()`, the [`gtsummary` package](https://github.com/ddsjoberg/gtsummary) uses the label attribute to name variables in its output tables where possible, and my [`siftr` package](https://github.com/DesiQuintans/siftr/) allows you to search the labels (among all other text in each variable) to find the right variable in large datasets.
