@@ -59,4 +59,5 @@ describe_with_dictionary <- function(df, path) {
     global_eval(code)
 
     cat(" ", global_eval(sprintf('tsv2label:::display_attr(%s, "label")', df_char)))
+    cat("\n\n")
 }

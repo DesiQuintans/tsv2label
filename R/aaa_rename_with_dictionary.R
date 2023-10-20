@@ -30,6 +30,7 @@ closure.tsv_to_colnames <- function(orig_to_new) {
 
         message(msg_fmt("head(colnames(", df_char ,")):"))
         cat(" ", global_eval(sprintf("head(colnames(%s))", df_char)))
+        cat("\n\n")
     }
 }
 
