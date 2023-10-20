@@ -111,6 +111,15 @@ factorise_with_dictionary <- function(df, path) {
         vfile <- get_file(path, flist[factor_file])
         vfile <- as.data.frame(lapply(vfile, trimws))  # as.data.frame() is important for rowwise filtering below.
 
+        # Check that the file contains the minimum columns: 'levels' and 'labels'.
+        if (("levels" %in% colnames(vfile)) == FALSE) {
+            stop("The file '", factor_file, "' does not have a column called 'levels'.")
+        }
+
+        if (("labels" %in% colnames(vfile)) == FALSE) {
+            stop("The file '", factor_file, "' does not have a column called 'labels'.")
+        }
+
         # Should the factor be an ordered one?
         if (is.null(vfile$ordered)) {
             # The ordered column doesn't exist, so make an unordered factor
