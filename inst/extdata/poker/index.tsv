@@ -1,5 +1,5 @@
 name	rename	description	factor_file
-ID	random_int	Some random integers.
+ID	random_int	Some random integers.	
 S1	c1_suit	Suit of card #1	values_suits
 C1	c1_rank	Rank of card #1	values_ranks
 S2	c2_suit	Suit of card #2	values_suits
@@ -11,6 +11,6 @@ C4	c4_rank	Rank of card #4	values_ranks
 S5	c5_suit	Suit of card #5	values_suits
 C5	c5_rank	Rank of card #5	values_ranks
 CLASS	hand_from_cards	Poker hand (cards 1-5)	values_hands
-CAT		Random cat names.
+CAT		Random cat names.	" "
 COIN FLIP	coin_flip	Outcome of a coinflip.	values_flip
-not_exist		Column not in dataset.
+not_exist		Column not in dataset.	
