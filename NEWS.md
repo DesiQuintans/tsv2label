@@ -9,6 +9,7 @@
     - Documentation demonstrates how unused factor levels can be dropped with `base::droplevels()`. Closes <https://github.com/DesiQuintans/tsv2label/issues/9>
 
 - FIXED
+    - Empty `factor_file` cells (e.g. spaces only) are handled correctly. Closes <https://github.com/DesiQuintans/tsv2label/issues/11>.
     - Files with multiple extensions (e.g. "index.tsv.txt") are accounted for.
     - Factor files with mixed-case names are handled properly.
     - `factorise_with_dictionary()` now trims trailing whitespace from factor levels and labels at all stages, including from the raw input vector.
