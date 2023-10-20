@@ -71,7 +71,7 @@ factorise_with_dictionary <- function(df, path) {
 
     # Get columns that have factor files associated with them
     val_flist <- index_tsv[, c("name", "factor_file")]
-    val_flist <- val_flist[val_flist$factor_file != "", ]
+    val_flist <- val_flist[trimws(val_flist$factor_file) != "", ]
 
     # factor_file might have been given with file extensions. Remove them and
     # lowercase them so that they match up with the names of flist.
