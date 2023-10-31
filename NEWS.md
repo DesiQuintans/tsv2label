@@ -10,6 +10,7 @@
     - `factorise_with_dictionary()` announces which factor file and columns it's currently working on. Good for large datasets so you know it isn't frozen. Closes <https://github.com/DesiQuintans/tsv2label/issues/10>.
     - Optional `exclude` column in factor files, which lets you exclude a level/label from the final factor (i.e. turn it into `NA`) by setting the value of `exclude` to (case-insensitive) `true`, `t`, `yes`, `y`, or `1`. Previously, `NA`ing levels was done by omitting them from the factor file entirely. This lets you keep the level in the dictionary for completeness and transparency.
     - Documentation demonstrates how unused factor levels can be dropped with `base::droplevels()`. Closes <https://github.com/DesiQuintans/tsv2label/issues/9>
+    - Unit tests.
 
 - FIXED
     - .Globalenv is no longer hard-coded. Closes <https://github.com/DesiQuintans/tsv2label/issues/14>.
