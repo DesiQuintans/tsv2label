@@ -4,22 +4,26 @@
 \alias{describe_with_dictionary}
 \title{Add descriptions to variables using a data dictionary}
 \usage{
-describe_with_dictionary(df, path)
+describe_with_dictionary(df, path, up = 2)
 }
 \arguments{
 \item{df}{(Dataframe) A dataframe to label.}
 
 \item{path}{(Character) Path to the dataset's dictionary files, which is
 either a folder or a .zip file. See \link{expected_files} for more info.}
+
+\item{up}{(Integer) The number of environments to step back in, determining
+where this function will be evaluated. See \code{\link[=parent.frame]{parent.frame()}} for details.
+The default value of \code{up = 2} is usually appropriate.}
 }
 \value{
-Mutates \code{df} in-place in the global environment.
+Mutates \code{df} in-place in the specified environment.
 }
 \description{
 Variable descriptions (the attribute called \code{"label"}) are used by lots of
 R packages to add functionality. For example, RStudio can display labels in
 \code{\link[=View]{View()}}, the \code{gtsummary} package uses the label attribute to name
-variables in its output tables where possible, and the \code{sift} package allows
+variables in its output tables where possible, and the \code{siftr} package allows
 you to search the labels to find variables in large datasets.
 }
 \examples{

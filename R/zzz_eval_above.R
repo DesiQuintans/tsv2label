@@ -1,5 +1,5 @@
 
-# Evaluate a character vector of code in the global environment
+# Evaluate a character vector of code in the environment above this one (up to .Globalenv)
 #
 # By far the cheapest approach for labelling large dataframes:
 #
@@ -15,7 +15,7 @@
 #   Side-effect (mutates global state)
 #
 # EXAMPLE:
-#   global_eval("head(iris)")
-global_eval <- function(code_chr) {
-    eval(parse(text = code_chr), envir = .GlobalEnv)
+#   eval_above("head(iris)", 1)
+eval_above <- function(code_chr, up) {
+    eval.parent(parse(text = code_chr), n = up)
 }

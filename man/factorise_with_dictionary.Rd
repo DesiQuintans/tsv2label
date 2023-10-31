@@ -5,18 +5,22 @@
 \alias{factorize_with_dictionary}
 \title{Convert variables to Factors with a data dictionary}
 \usage{
-factorise_with_dictionary(df, path)
+factorise_with_dictionary(df, path, up = 2)
 
-factorize_with_dictionary(df, path)
+factorize_with_dictionary(df, path, up = 2)
 }
 \arguments{
 \item{df}{(Dataframe) A dataframe to label.}
 
 \item{path}{(Character) Path to the dataset's dictionary files, which is
 either a folder or a .zip file. See \link{expected_files} for more info.}
+
+\item{up}{(Integer) The number of environments to step back in, determining
+where this function will be evaluated. See \code{\link[=parent.frame]{parent.frame()}} for details.
+The default value of \code{up = 2} is usually appropriate.}
 }
 \value{
-Mutates \code{df} in-place in the global environment.
+Mutates \code{df} in-place in the specified environment.
 }
 \description{
 Datasets imported into R from foreign analysis packages (SPSS, SAS, MATLAB)
@@ -26,8 +30,7 @@ categorical data as Factors. Some other R packages put these labels into an
 attribute called \code{"labels"} (note plural) as a temporary measure until you
 decide to convert them into factors. \emph{This} package goes straight to
 converting them so that they're ready to use.
-}
-\details{
+
 Factorising from a dictionary can produce a large number of unused factor
 levels, e.g. converting \code{country_of_residence} to a factor using a dictionary
 of hundreds of countries, but your dataset only contains people from Australia.

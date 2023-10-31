@@ -6,26 +6,29 @@
 \alias{revert_colnames}
 \title{Rename columns using a data dictionary}
 \usage{
-rename_with_dictionary(df, path)
+rename_with_dictionary(df, path, up = 2)
 
-revert_colnames(df, path)
+revert_colnames(df, path, up = 2)
 }
 \arguments{
 \item{df}{(Dataframe) A dataframe whose columns you want to rename.}
 
 \item{path}{(Character) Path to the dataset's dictionary files, which is
 either a folder or a .zip file. See \link{expected_files} for more info.}
+
+\item{up}{(Integer) The number of environments to step back in, determining
+where this function will be evaluated. See \code{\link[=parent.frame]{parent.frame()}} for details.
+The default value of \code{up = 2} is usually appropriate.}
 }
 \value{
-Mutates \code{df} in-place in the global environment.
+Mutates \code{df} in-place in the specified environment.
 }
 \description{
 Datasets from foreign analysis packages sometimes impose character length
 limits on their variables, which leads to variable names that can be obtuse.
 This function lets you rename columns (and undo that renaming) using a data
 dictionary.
-}
-\details{
+
 Only columns that are an exact match will be renamed, all others will be left
 alone; this means that you can 'pre-name' a column that doesn't exist in your
 dataframe yet, create that column, and then name it from the dictionary
@@ -42,6 +45,9 @@ afterwards.
 \donttest{
 # An unlabelled dataset that is built-into this package.
 my_poker <- poker
+
+head(colnames(my_poker))
+##  [1] "ID" "S1" "C1" "S2" "C2" "S3"
 
 # system.file() gives the path to a dictionary for this dataset, which is
 # also built-into this package.

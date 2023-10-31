@@ -4,14 +4,17 @@
 #' Variable descriptions (the attribute called `"label"`) are used by lots of
 #' R packages to add functionality. For example, RStudio can display labels in
 #' [View()], the `gtsummary` package uses the label attribute to name
-#' variables in its output tables where possible, and the `sift` package allows
+#' variables in its output tables where possible, and the `siftr` package allows
 #' you to search the labels to find variables in large datasets.
 #'
 #' @param df (Dataframe) A dataframe to label.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'      either a folder or a .zip file. See [expected_files] for more info.
+#' @param up (Integer) The number of environments to step back in, determining
+#'   where this function will be evaluated. See [parent.frame()] for details.
+#'   The default value of `up = 2` is usually appropriate.
 #'
-#' @return Mutates `df` in-place in the global environment.
+#' @return Mutates `df` in-place in the specified environment.
 #' @export
 #'
 #' @examples
@@ -32,7 +35,7 @@
 #' ##  S3 Suit of card #3
 #' }
 #' @md
-describe_with_dictionary <- function(df, path) {
+describe_with_dictionary <- function(df, path, up = 2) {
     df_char <- deparse(substitute(df))
 
     # 1. Get the filenames in the label directory.
@@ -55,9 +58,9 @@ describe_with_dictionary <- function(df, path) {
     code <- sprintf('attr(%s[["%s"]], "label") <- "%s"',
                     df_char, index_tsv$name, index_tsv$description)
 
-    # 6. Evaluate that code in the global environment.
-    global_eval(code)
+    # 6. Evaluate that code in the environment above this one.
+    eval_above(code, up = up)
 
-    cat(" ", global_eval(sprintf('tsv2label:::display_attr(%s, "label")', df_char)))
+    cat(" ", eval_above(sprintf('tsv2label:::display_attr(%s, "label")', df_char), up = up))
     cat("\n\n")
 }

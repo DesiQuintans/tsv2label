@@ -1,6 +1,7 @@
 
 #' Convert variables to Factors with a data dictionary
 #'
+#' @description
 #' Datasets imported into R from foreign analysis packages (SPSS, SAS, MATLAB)
 #' often come with "value labels" which, for example, tell you that a `0` in a
 #' column actually means `"Travelling locally"` or something. R represents such
@@ -17,8 +18,12 @@
 #' @param df (Dataframe) A dataframe to label.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'      either a folder or a .zip file. See [expected_files] for more info.
+#' @param up (Integer) The number of environments to step back in, determining
+#'   where this function will be evaluated. See [parent.frame()] for details.
+#'   The default value of `up = 2` is usually appropriate.
 #'
-#' @return Mutates `df` in-place in the global environment.
+#'
+#' @return Mutates `df` in-place in the specified environment.
 #' @export
 #'
 #' @seealso [droplevels()]
@@ -59,7 +64,7 @@
 #' my_poker <- droplevels(my_poker)
 #' }
 #' @md
-factorise_with_dictionary <- function(df, path) {
+factorise_with_dictionary <- function(df, path, up = 2) {
     # Value labels are basically hold-overs from other analysis packages, and
     # are useless in R until converted into factors.
 
@@ -104,8 +109,8 @@ factorise_with_dictionary <- function(df, path) {
         # NOTE: Whatever types these columns started in, the fact that they are
         # labelled means that they are categorical and therefore their true type
         # in R should be Factor, which is what this function will turn them into.
-        global_eval(sprintf('%1$s[["%2$s"]] <- trimws(as.character(%1$s[["%2$s"]]))',
-                            df_char, cols))
+        eval_above(sprintf('%1$s[["%2$s"]] <- trimws(as.character(%1$s[["%2$s"]]))',
+                            df_char, cols), up = up)
 
         # 2. Get the value file
         vfile <- get_file(path, flist[factor_file])
@@ -138,7 +143,7 @@ factorise_with_dictionary <- function(df, path) {
                         df_char, cols, deparse2(vfile$levels), deparse2(vfile$labels),
                         is_ordered)
 
-        global_eval(code)
+        eval_above(code, up = up)
     }
 
     # Preview the change
@@ -152,7 +157,7 @@ factorise_with_dictionary <- function(df, path) {
             sprintf("Peeking at 'levels(%s[[\"%s\"]])', built from '%s':",
                     df_char, x[i], names(x[i]))
             ))
-        cat(msg_fmt(paste(global_eval(sprintf('levels(%s[["%s"]])', df_char, x[i])), collapse = ", ")))
+        cat(msg_fmt(paste(eval_above(sprintf('levels(%s[["%s"]])', df_char, x[i]), up = up), collapse = ", ")))
         cat("\n\n")
     }
 }
