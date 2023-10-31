@@ -3,6 +3,7 @@
 
 ## GitHub-installed in-development version (> 0.2.0)
 
+    - Columns `LOGICAL_CHAR` and `LOGICAL_INT` added to the built-in `poker` dataset for unit testing.
 - ADDED
     - Functions now have a `up` argument that gives you optional control over the environment where the functions will be evaluated.
     - `factorise_with_dictionary()` now tells you if your factor file is missing the required columns `levels` and `labels`.
