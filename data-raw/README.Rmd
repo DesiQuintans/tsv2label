@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(width = 100)
 ```
 
 ------------------------------------------------------------------------
@@ -26,7 +27,7 @@ library(tsv2label)  # Load it up!
 
 If you've ever tried to find your way through a dataset with cryptic names and values, you've probably made a spreadsheet that had columns like: 1) variable name, 2) what it contains, 3) what its types are, especially if it looks like they are coding for something.
 
-`tsv2label` lets you use such a spreadsheet to label, rename, and factorise your dataset automatically; especially helpful if your dataset is hundreds of columns wide.
+`tsv2label` lets you use such a spreadsheet to label, rename, and recode your dataset automatically; especially helpful if your dataset is hundreds of columns wide.
 
 It uses tab-delimited spreadsheets which are editable in Excel; easy to assemble by copying and pasting from existing messy data dictionaries; can be cleaned and reshaped with regular expressions and multiple cursors; and can be tracked and diffed with version control software.
 
@@ -38,24 +39,24 @@ It uses tab-delimited spreadsheets which are editable in Excel; easy to assemble
 
 `tsv2label` gives you four main functions:
 
-| Function                              | Description                            |
-|:--------------------------------------|:---------------------------------------|
-| `factorise_with_dictionary(df, path)` | Convert variables to Factor            |
-| `describe_with_dictionary(df, path)`  | Add descriptions (labels) to variables |
-| `rename_with_dictionary(df, path)`    | Rename variables                       |
-|                                       |                                        |
-| `revert_colnames(df, path)`           | Return columns to their original names |
+| Function                              | Description                              |
+|:--------------------------------------|:-----------------------------------------|
+| `recode_with_dictionary(df, path)`    | Convert variables to other data types    |
+| `describe_with_dictionary(df, path)`  | Add descriptions (labels) to variables   |
+| `rename_with_dictionary(df, path)`    | Rename variables                         |
+|                                       |                                          |
+| `revert_colnames(df, path)`           | Return variables to their original names |
 
 ## Order of operations {#order}
 
 The order that these functions should be applied is:
 
-1. `factorise_with_dictionary()`
+1. `recode_with_dictionary()`
 2. `describe_with_dictionary()`
 3. `rename_with_dictionary()`
 4. `revert_colnames()`
 
-This is because when `factorise_with_dictionary()` converts variables to Factors, any labels associated with them are lost. And when `rename_with_dictionary()` renames variables, `factorise_with_dictionary()` and `describe_with_dictionary()` can no longer find and act on them.
+This is because when `recode_with_dictionary()` converts variables, any labels associated with them are lost. And when `rename_with_dictionary()` renames variables, `recode_with_dictionary()` and `describe_with_dictionary()` can no longer find and act on them.
 
 ------------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ library(tsv2label)
 head(poker)
 ```
 
-There are many coded values here that need to be converted to Factors. The column names are cryptic, and the dataset has no variable labels which would aid in exploration, especially when using a label-aware exploration package like [`siftr`](https://github.com/DesiQuintans/siftr/).
+There are many coded values here that need to be converted to other data types (for example, `S1` should be "Clubs", "Diamonds", etc., and `LOGICAL_CHAR` should be recoded as `TRUE` and `FALSE`). The column names are cryptic, and the dataset has no variable labels which would aid in exploration, especially when using a label-aware exploration package like [`siftr`](https://github.com/DesiQuintans/siftr/).
 
 Luckily, `tsv2label` ships with the data dictionary for this dataset, in both .ZIP and folder forms (`tsv2label` can read directly from both):
 
@@ -108,12 +109,35 @@ It must have these four columns in any order (all other columns are ignored):
 1.  `name` is the name of a column/variable in your dataset.
 2.  `rename` is what to rename the column. Leave it blank if unneeded.
 3.  `description` is a human-readable description of what the variable is about. Leave it blank if unneeded.
-4.  `factor_file` is used to convert categorical data into Factors. It has the filename (with or without file extension) of a spreadsheet in the same folder that describes how levels are mapped to labels, e.g. postal codes to suburb names. As you can see, one `factor_file` can be applied to many columns.
+4.  `recode_with` is used to convert raw data into other data types, such as Logical and Factor. It accepts one of three things:
+    1. Nothing (empty), which means that the column will not be recoded.
+    2. The filename of a **mapping spreadsheet** in the same folder (with or without file extension) that describes how levels are mapped to labels, e.g. postal codes to suburb names. 
+    3. The name of a **<converter>**, which is a built-in way to handle common recoding operations. A list of accepted ones is given below.
+    
+As you can see, one mapping spreadsheet or converter can be applied to many columns.
+
+### Converters
+
+Converters are built-in methods for the most common recoding operations. The package treats anything wrapped in *<angle brackets>* as a converter. Currently accepted converters are:
+
+#### Convert 1/0/yes/no/true/false values
+
+These conversions ignore case. 'Truthy' values are `{1, y, yes, t, true}`. 'Falsy' values are `{0, n, no, f, false}`.
+
+- **`<truefalse>`** --- Converts truthy values to `TRUE`, falsy values to `FALSE`, everything else (including `NA`) to `NA`.
+- **`<truefalse-lazy>`** --- Converts truthy values to `TRUE` and everything else to `FALSE`, but preserves `NA` as `NA`.
+
+- **`<yesno>`** --- Converts truthy values to factor level `"Yes"`, falsy values to factor level `"No"`, and everything else (including `NA`) to `NA`. `"Yes"` is the first factor level.
+- **`<noyes>`** --- Same as above, but with `"No"` as the first factor level.
+
+- **`<yesno-lazy>`** --- Converts truthy values to factor level `"Yes"` and everything else to factor level `"No"`, but preserves `NA` as `NA`. `"Yes"` is the first factor level.
+- **`<noyes-lazy>`** --- Same as above, but with `"No"` as the first factor level.
 
 
-### Factor files
 
-The factor files control how a variable is going to be converted to a Factor type. Factor files must also be tab-delimited files in *.TSV* or *.TXT* format.
+### Mapping spreadsheets
+
+The mapping spreadsheets control how a variable is going to be converted to a Factor type. mapping spreadsheet must be tab-delimited files in *.TSV* or *.TXT* format, just like the Index file is.
 
 ```{r}
 system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.delim()
@@ -140,16 +164,16 @@ Any other columns are ignored.
 
 ## Reading a dictionary
 
-`tsv2label` can read dictionaries from both folders and .ZIP files. The latter is particularly convenient because it lets you distribute a dictionary as a single .ZIP file.
+`tsv2label` can read dictionaries from both folders and .ZIP files. The latter is convenient because it lets you distribute a dictionary as a single .ZIP file.
 
 `tsv2label` functions have a `path` argument to tell them where the dictionary is:
 
 ```{r eval=FALSE}
 # To read from a folder, use the path to the folder:
-factorise_with_dictionary(df = my_data, path = "C:/path/to/dictionary/folder")
+recode_with_dictionary(df = my_data, path = "C:/path/to/dictionary/folder")
 
 # To read from a .ZIP, use the path to the .ZIP (it will unzip automatically):
-factorise_with_dictionary(df = my_data, path = "C:/path/to/my_dictionary.zip")
+recode_with_dictionary(df = my_data, path = "C:/path/to/my_dictionary.zip")
 ```
 
 For this example, let's read the dictionary from the folder.
@@ -162,23 +186,23 @@ dictionary_dir
 If you were using your own data dictionary, then this would be a path to its location on your computer.
 
 
-## Step 1: Convert categorical variables to Factors
+## Step 1: Recode variables
 
-Converting to Factor always comes first in our [order of operations](#order-of-operations).
+Recoding always comes first in our [order of operations](#order-of-operations).
 
 ```{r}
-factorise_with_dictionary(df = poker, path = dictionary_dir)
+recode_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
 Note that we didn't have to assign the result to a name; all `tsv2label` functions avoid expensive copying by modifying the dataframe in-place.
 
-Any column that had a `factor_file` associated with it in `index` will be converted to a Factor:
+Any column that had a `recode_with` associated with it in `index` will be recoded:
 
 ```{r}
 head(poker)
 ```
 
-In real-world conditions, factorising variables from a data dictionary may produce unused factor levels. For example, imagine encoding a variable called `country_of_residence` into a factor using a dictionary of hundreds of countries, but everyone in your dataset resides in Australia. If you want to remove these unused levels, it's an easy one-line operation:
+In real-world conditions, the Factors that are generated may have unused factor levels. For example, imagine recoding a variable called `country_of_residence` using a mapping spreadsheet that has hundreds of countries, but everyone in your dataset resides in Australia so none of the other country levels are used at all. If you want to remove these unused levels, it's an easy one-line operation:
 
 ```{r eval=FALSE}
 poker <- droplevels(poker)
@@ -261,18 +285,20 @@ The keywords **REQUIRED/MUST**, **MUST NOT**, and **MAY/OPTIONAL** are interpret
         -   If not blank, **MUST** be a [syntactically valid name](https://stat.ethz.ch/R-manual/R-devel/library/base/html/make.names.html) in R.
     -   `description` --- Description of what the variable contains or is about. Also known as 'variable labels'. Used to fill the `"label"` attribute of the variable.
         -   **MAY** be left blank. This means that the variable will not be described.
-    -   `factor_file` --- The filename of a spreadsheet in the *dictionary path* that describes how the variable's values are mapped to labels, e.g. postal codes to place names. These are also known as 'value labels'. These are used to convert the variable to a Factor type.
-        -   **MAY** be left blank. This means that the variable will not be converted to a Factor.
-        -   If not blank, **MUST** exactly match the filename of a file in the *dictionary path*.
-        -   All factor files that are named here **MUST** exist.
-        -   **MAY** be given with or without a file extension; it is assumed to point to a `.tsv` or `.txt` file.
-        -   More than one `name` **MAY** share the same `factor_file`.
+    -   `recode_with` --- Describes how the variable will be recoded into a different data type (if desired).
+        -   **MAY** be left blank. This means that the variable will not be modified.
+        -   **MAY** be the name of a converter, which is wrapped in `<angle-brackets>`.
+            - The converter **MUST** exactly match one of the [listed converters](#converters).
+        -   **MAY** exactly match the filename of a mapping spreadsheet in the *dictionary path*.
+            -   All mapping spreadsheets that are named here **MUST** exist.
+            -   **MAY** be given with or without a file extension; it is assumed to point to a `.tsv` or `.txt` file.
+        -   More than one `name` **MAY** share the same mapping spreadsheet or converter.
 
-### Contents of `factor_file` files
+### Contents of mapping spreadsheets
 
-If defined for a variable in the `factor_file` column of `index`:
+If defined for a variable in the `recode_with` column of `index`:
 
--   **MUST** be in the *dictionary path*, and exactly match the name given in the `factor_file` column.
+-   **MUST** be in the *dictionary path*, and exactly match the name given in the `recode_with`` column.
 -   **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt* format.
 
 -   **MUST** have these columns in any order: `levels`, `labels`.

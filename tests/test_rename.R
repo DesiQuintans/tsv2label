@@ -2,22 +2,26 @@
 
 # Setup -------------------------------------------------------------------
 
+library(tsv2label)
+
 my_poker <- tsv2label::poker  # The test data
 dict_path <- system.file("extdata/poker", package = "tsv2label")  # The dictionary
 
+# deparse(colnames(my_poker)) |> clipr::write_clip()
+
 # I set these up manually on purpose.
 orig_colnames <-
-    c("ID",
-      "S1", "C1", "S2", "C2", "S3", "C3",
-      "S4", "C4", "S5", "C5", "CLASS",
-      "CAT", "COIN FLIP", "LIST_COL", "LOGICAL_CHAR", "LOGICAL_INT")
+    c("ID", "S1", "C1", "S2", "C2", "S3", "C3", "S4", "C4", "S5",
+      "C5", "CLASS", "CAT", "COIN FLIP", "LIST_COL", "LOGICAL_CHAR",
+      "LOGICAL_INT", "yesno")
+
 
 new_colnames <-
-    c("random_int",
-      "c1_suit", "c1_rank", "c2_suit", "c2_rank", "c3_suit", "c3_rank",
-      "c4_suit", "c4_rank", "c5_suit", "c5_rank", "hand_from_cards",
-      "CAT", "coin_flip", "LIST_COL", "LOGICAL_CHAR", "LOGICAL_INT"
-    )
+    c("random_int", "c1_suit", "c1_rank", "c2_suit", "c2_rank", "c3_suit",
+      "c3_rank", "c4_suit", "c4_rank", "c5_suit", "c5_rank", "hand_from_cards",
+      "CAT", "coin_flip", "LIST_COL", "LOGICAL_CHAR", "LOGICAL_INT",
+      "yesno")
+
 
 
 
@@ -45,6 +49,17 @@ stopifnot(
     "Dataset's column names did not revert to their expected original values." =
         colnames(my_poker) == orig_colnames
 )
+
+
+
+run_nested <- function(df) {
+    tsv2label::rename_with_dictionary(df, dict_path)
+}
+
+for(i in 1) {
+    nested_poker <- poker
+    run_nested(nested_poker)
+}
 
 
 

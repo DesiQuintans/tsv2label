@@ -1,9 +1,7 @@
 Labelling datasets using a data dictionary, with `tsv2label`
 ================
 Desi Quintans
-2023-06-22
-
-------------------------------------------------------------------------
+2023-11-01
 
 - [Installation](#installation)
 - [List of functions](#list-of-functions)
@@ -14,10 +12,10 @@ Desi Quintans
   - [What does a dictionary look
     like?](#what-does-a-dictionary-look-like)
     - [Index file](#index-file)
-    - [Factor files](#factor-files)
+    - [Converters](#converters)
+    - [Mapping spreadsheets](#mapping-spreadsheets)
   - [Reading a dictionary](#reading-a-dictionary)
-  - [Step 1: Convert categorical variables to
-    Factors](#step-1-convert-categorical-variables-to-factors)
+  - [Step 1: Recode variables](#step-1-recode-variables)
   - [Step 2: Add labels/descriptions to
     variables](#step-2-add-labelsdescriptions-to-variables)
   - [Step 3: Rename variables](#step-3-rename-variables)
@@ -25,7 +23,8 @@ Desi Quintans
   - [Formal definition of a `tsv2label` data dictionary](#formal)
     - [File structure](#file-structure)
     - [Contents of `index` file](#contents-of-index-file)
-    - [Contents of `factor_file` files](#contents-of-factor_file-files)
+    - [Contents of mapping
+      spreadsheets](#contents-of-mapping-spreadsheets)
 
 ------------------------------------------------------------------------
 
@@ -45,9 +44,9 @@ names and values, you’ve probably made a spreadsheet that had columns
 like: 1) variable name, 2) what it contains, 3) what its types are,
 especially if it looks like they are coding for something.
 
-`tsv2label` lets you use such a spreadsheet to label, rename, and
-factorise your dataset automatically; especially helpful if your dataset
-is hundreds of columns wide.
+`tsv2label` lets you use such a spreadsheet to label, rename, and recode
+your dataset automatically; especially helpful if your dataset is
+hundreds of columns wide.
 
 It uses tab-delimited spreadsheets which are editable in Excel; easy to
 assemble by copying and pasting from existing messy data dictionaries;
@@ -62,28 +61,27 @@ cursors; and can be tracked and diffed with version control software.
 
 `tsv2label` gives you four main functions:
 
-| Function                              | Description                            |
-|:--------------------------------------|:---------------------------------------|
-| `factorise_with_dictionary(df, path)` | Convert variables to Factor            |
-| `describe_with_dictionary(df, path)`  | Add descriptions (labels) to variables |
-| `rename_with_dictionary(df, path)`    | Rename variables                       |
-|                                       |                                        |
-| `revert_colnames(df, path)`           | Return columns to their original names |
+| Function                             | Description                              |
+|:-------------------------------------|:-----------------------------------------|
+| `recode_with_dictionary(df, path)`   | Convert variables to other data types    |
+| `describe_with_dictionary(df, path)` | Add descriptions (labels) to variables   |
+| `rename_with_dictionary(df, path)`   | Rename variables                         |
+|                                      |                                          |
+| `revert_colnames(df, path)`          | Return variables to their original names |
 
 ## Order of operations
 
 The order that these functions should be applied is:
 
-1.  `factorise_with_dictionary()`
+1.  `recode_with_dictionary()`
 2.  `describe_with_dictionary()`
 3.  `rename_with_dictionary()`
 4.  `revert_colnames()`
 
-This is because when `factorise_with_dictionary()` converts variables to
-Factors, any labels associated with them are lost. And when
-`rename_with_dictionary()` renames variables,
-`factorise_with_dictionary()` and `describe_with_dictionary()` can no
-longer find and act on them.
+This is because when `recode_with_dictionary()` converts variables, any
+labels associated with them are lost. And when
+`rename_with_dictionary()` renames variables, `recode_with_dictionary()`
+and `describe_with_dictionary()` can no longer find and act on them.
 
 ------------------------------------------------------------------------
 
@@ -104,19 +102,20 @@ some added columns:
 head(poker)
 ```
 
-    ##   ID S1 C1 S2 C2 S3 C3 S4 C4 S5 C5 CLASS    CAT COIN FLIP LIST_COL
-    ## 1  1  1 10  1 11  1 13  1 12  1  1     9  Socks     FALSE  a, n, w
-    ## 2  2  2 11  2 13  2 10  2 12  2  1     9   Fred     FALSE  v, e, c
-    ## 3  3  3 12  3 11  3 13  3 10  3  1     9 Fluffy      TRUE  v, f, t
-    ## 4  4  4 10  4 11  4  1  4 13  4 12     9   Nala      TRUE  h, l, o
-    ## 5  5  4  1  4 13  4 12  4 11  4 10     9   Cher      TRUE  b, d, v
-    ## 6  6  1  2  1  4  1  5  1  3  1  6     8   Lily      TRUE  n, p, r
+    ##   ID S1 C1 S2 C2 S3 C3 S4 C4 S5 C5 CLASS    CAT COIN FLIP LIST_COL LOGICAL_CHAR LOGICAL_INT yesno
+    ## 1  1  1 10  1 11  1 13  1 12  1  1     9  Socks     FALSE  n, s, p            t           0    No
+    ## 2  2  2 11  2 13  2 10  2 12  2  1     9   Fred     FALSE  z, x, k          YES          NA  <NA>
+    ## 3  3  3 12  3 11  3 13  3 10  3  1     9 Fluffy      TRUE  x, b, v         <NA>           1    No
+    ## 4  4  4 10  4 11  4  1  4 13  4 12     9   Nala      TRUE  k, f, g        apple           2    No
+    ## 5  5  4  1  4 13  4 12  4 11  4 10     9   Cher      TRUE  j, q, h        FaLsE          -1   Yes
+    ## 6  6  1  2  1  4  1  5  1  3  1  6     8   Lily      TRUE  g, f, a           No          NA  <NA>
 
-There are many coded values here that need to be converted to Factors.
-The column names are cryptic, and the dataset has no variable labels
-which would aid in exploration, especially when using a label-aware
-exploration package like
-[`siftr`](https://github.com/DesiQuintans/siftr/).
+There are many coded values here that need to be converted to other data
+types (for example, `S1` should be “Clubs”, “Diamonds”, etc., and
+`LOGICAL_CHAR` should be recoded as `TRUE` and `FALSE`). The column
+names are cryptic, and the dataset has no variable labels which would
+aid in exploration, especially when using a label-aware exploration
+package like [`siftr`](https://github.com/DesiQuintans/siftr/).
 
 Luckily, `tsv2label` ships with the data dictionary for this dataset, in
 both .ZIP and folder forms (`tsv2label` can read directly from both):
@@ -139,8 +138,7 @@ contains tab-delimited spreadsheets in either *.TSV* or *.TXT* format.
 system.file("extdata/poker", package = "tsv2label") |> list.files()
 ```
 
-    ## [1] "index.tsv"        "values_flip.tsv"  "values_hands.tsv" "values_ranks.tsv"
-    ## [5] "values_suits.tsv"
+    ## [1] "index.tsv"        "values_flip.tsv"  "values_hands.tsv" "values_ranks.tsv" "values_suits.tsv"
 
 The Appendix below has the [formal definition of a
 dictionary](#formal-definition-of-a-tsv2label-data-dictionary), but the
@@ -156,22 +154,25 @@ tab-delimited file in *.TSV* or *.TXT* format.
 system.file("extdata/poker/index.tsv", package = "tsv2label") |> read.delim()
 ```
 
-    ##         name          rename            description  factor_file
-    ## 1         ID      random_int  Some random integers.             
-    ## 2         S1         c1_suit        Suit of card #1 values_suits
-    ## 3         C1         c1_rank        Rank of card #1 values_ranks
-    ## 4         S2         c2_suit        Suit of card #2 values_suits
-    ## 5         C2         c2_rank        Rank of card #2 values_ranks
-    ## 6         S3         c3_suit        Suit of card #3 values_suits
-    ## 7         C3         c3_rank        Rank of card #3 values_ranks
-    ## 8         S4         c4_suit        Suit of card #4 values_suits
-    ## 9         C4         c4_rank        Rank of card #4 values_ranks
-    ## 10        S5         c5_suit        Suit of card #5 values_suits
-    ## 11        C5         c5_rank        Rank of card #5 values_ranks
-    ## 12     CLASS hand_from_cards Poker hand (cards 1-5) values_hands
-    ## 13       CAT                      Random cat names.             
-    ## 14 COIN FLIP       coin_flip Outcome of a coinflip.  values_flip
-    ## 15 not_exist                 Column not in dataset.
+    ##            name          rename                                     description  recode_with
+    ## 1            ID      random_int                           Some random integers.             
+    ## 2            S1         c1_suit                                 Suit of card #1 values_suits
+    ## 3            C1         c1_rank                                 Rank of card #1 values_ranks
+    ## 4            S2         c2_suit                                 Suit of card #2 values_suits
+    ## 5            C2         c2_rank                                 Rank of card #2 values_ranks
+    ## 6            S3         c3_suit                                 Suit of card #3 values_suits
+    ## 7            C3         c3_rank                                 Rank of card #3 values_ranks
+    ## 8            S4         c4_suit                                 Suit of card #4 values_suits
+    ## 9            C4         c4_rank                                 Rank of card #4 values_ranks
+    ## 10           S5         c5_suit                                 Suit of card #5 values_suits
+    ## 11           C5         c5_rank                                 Rank of card #5 values_ranks
+    ## 12        CLASS hand_from_cards                          Poker hand (cards 1-5) values_hands
+    ## 13          CAT                                               Random cat names.             
+    ## 14    COIN FLIP       coin_flip                          Outcome of a coinflip.  values_flip
+    ## 15    not_exist                                          Column not in dataset.             
+    ## 16 LOGICAL_CHAR                 Characters that are truthy, falsy, and neither.  <truefalse>
+    ## 17  LOGICAL_INT                   Integers that are truthy, falsy, and neither. <noyes-lazy>
+    ## 18        yesno                                     Yeses and Nos and Missings.  <truefalse>
 
 It must have these four columns in any order (all other columns are
 ignored):
@@ -180,17 +181,56 @@ ignored):
 2.  `rename` is what to rename the column. Leave it blank if unneeded.
 3.  `description` is a human-readable description of what the variable
     is about. Leave it blank if unneeded.
-4.  `factor_file` is used to convert categorical data into Factors. It
-    has the filename (with or without file extension) of a spreadsheet
-    in the same folder that describes how levels are mapped to labels,
-    e.g. postal codes to suburb names. As you can see, one `factor_file`
-    can be applied to many columns.
+4.  `recode_with` is used to convert raw data into other data types,
+    such as Logical and Factor. It accepts one of three things:
+    1.  Nothing (empty), which means that the column will not be
+        recoded.
+    2.  The filename of a **mapping spreadsheet** in the same folder
+        (with or without file extension) that describes how levels are
+        mapped to labels, e.g. postal codes to suburb names.
+    3.  The name of a **<converter>**, which is a built-in way to handle
+        common recoding operations. A list of accepted ones is given
+        below.
 
-### Factor files
+As you can see, one mapping spreadsheet or converter can be applied to
+many columns.
 
-The factor files control how a variable is going to be converted to a
-Factor type. Factor files must also be tab-delimited files in *.TSV* or
-*.TXT* format.
+### Converters
+
+Converters are built-in methods for the most common recoding operations.
+The package treats anything wrapped in *<angle brackets>* as a
+converter. Currently accepted converters are:
+
+#### Convert 1/0/yes/no/true/false values
+
+These conversions ignore case. ‘Truthy’ values are
+`{1, y, yes, t, true}`. ‘Falsy’ values are `{0, n, no, f, false}`.
+
+- **`<truefalse>`** — Converts truthy values to `TRUE`, falsy values to
+  `FALSE`, everything else (including `NA`) to `NA`.
+
+- **`<truefalse-lazy>`** — Converts truthy values to `TRUE` and
+  everything else to `FALSE`, but preserves `NA` as `NA`.
+
+- **`<yesno>`** — Converts truthy values to factor level `"Yes"`, falsy
+  values to factor level `"No"`, and everything else (including `NA`) to
+  `NA`. `"Yes"` is the first factor level.
+
+- **`<noyes>`** — Same as above, but with `"No"` as the first factor
+  level.
+
+- **`<yesno-lazy>`** — Converts truthy values to factor level `"Yes"`
+  and everything else to factor level `"No"`, but preserves `NA` as
+  `NA`. `"Yes"` is the first factor level.
+
+- **`<noyes-lazy>`** — Same as above, but with `"No"` as the first
+  factor level.
+
+### Mapping spreadsheets
+
+The mapping spreadsheets control how a variable is going to be converted
+to a Factor type. mapping spreadsheet must be tab-delimited files in
+*.TSV* or *.TXT* format, just like the Index file is.
 
 ``` r
 system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.delim()
@@ -233,18 +273,18 @@ Any other columns are ignored.
 ## Reading a dictionary
 
 `tsv2label` can read dictionaries from both folders and .ZIP files. The
-latter is particularly convenient because it lets you distribute a
-dictionary as a single .ZIP file.
+latter is convenient because it lets you distribute a dictionary as a
+single .ZIP file.
 
 `tsv2label` functions have a `path` argument to tell them where the
 dictionary is:
 
 ``` r
 # To read from a folder, use the path to the folder:
-factorise_with_dictionary(df = my_data, path = "C:/path/to/dictionary/folder")
+recode_with_dictionary(df = my_data, path = "C:/path/to/dictionary/folder")
 
 # To read from a .ZIP, use the path to the .ZIP (it will unzip automatically):
-factorise_with_dictionary(df = my_data, path = "C:/path/to/my_dictionary.zip")
+recode_with_dictionary(df = my_data, path = "C:/path/to/my_dictionary.zip")
 ```
 
 For this example, let’s read the dictionary from the folder.
@@ -254,24 +294,39 @@ dictionary_dir <- system.file("extdata/poker", package = "tsv2label")
 dictionary_dir
 ```
 
-    ## [1] "C:/Users/.../AppData/Local/R/win-library/4.3/tsv2label/extdata/poker"
+    ## [1] "C:/Users/dqui6184/AppData/Local/R/win-library/4.3/tsv2label/extdata/poker"
 
 If you were using your own data dictionary, then this would be a path to
 its location on your computer.
 
-## Step 1: Convert categorical variables to Factors
+## Step 1: Recode variables
 
-Converting to Factor always comes first in our [order of
+Recoding always comes first in our [order of
 operations](#order-of-operations).
 
 ``` r
-factorise_with_dictionary(df = poker, path = dictionary_dir)
+recode_with_dictionary(df = poker, path = dictionary_dir)
 ```
 
-    ##   (1/4)	Using 'values_flip' for COIN FLIP.
-    ##   (2/4)	Using 'values_hands' for CLASS.
-    ##   (3/4)	Using 'values_ranks' for C1, C2, C3, C4, C5.
-    ##   (4/4)	Using 'values_suits' for S1, S2, S3, S4, S5.
+    ##   (1/6)  Using '<noyes-lazy>' for LOGICAL_INT.
+
+    ##   (2/6)  Using '<truefalse>' for LOGICAL_CHAR, yesno.
+
+    ##   (3/6)  Using 'values_flip' for COIN FLIP.
+
+    ##   (4/6)  Using 'values_hands' for CLASS.
+
+    ##   (5/6)  Using 'values_ranks' for C1, C2, C3, C4, C5.
+
+    ##   (6/6)  Using 'values_suits' for S1, S2, S3, S4, S5.
+
+    ##   Peeking at 'levels(poker[["LOGICAL_INT"]])', built from '<noyes-lazy>':
+
+    ##   No, Yes
+
+    ##   Peeking at 'unique(poker[["LOGICAL_CHAR"]])', built from '<truefalse>':
+
+    ##   TRUE, NA, FALSE
 
     ##   Peeking at 'levels(poker[["COIN FLIP"]])', built from 'values_flip':
 
@@ -279,8 +334,8 @@ factorise_with_dictionary(df = poker, path = dictionary_dir)
 
     ##   Peeking at 'levels(poker[["CLASS"]])', built from 'values_hands':
 
-    ##   Nothing in hand, One pair, Two pairs, Three of a kind, Straight, 
-    ##   Flush, Full house, Four of a kind, Straight flush, Royal flush
+    ##   Nothing in hand, One pair, Two pairs, Three of a kind, Straight, Flush, Full house, 
+    ##   Four of a kind, Straight flush, Royal flush
 
     ##   Peeking at 'levels(poker[["C1"]])', built from 'values_ranks':
 
@@ -293,30 +348,34 @@ factorise_with_dictionary(df = poker, path = dictionary_dir)
 Note that we didn’t have to assign the result to a name; all `tsv2label`
 functions avoid expensive copying by modifying the dataframe in-place.
 
-Any column that had a `factor_file` associated with it in `index` will
-be converted to a Factor:
+Any column that had a `recode_with` associated with it in `index` will
+be recoded:
 
 ``` r
 head(poker)
 ```
 
-    ##   ID       S1    C1       S2   C2       S3    C3       S4    C4       S5    C5
-    ## 1  1   Hearts    10   Hearts Jack   Hearts  King   Hearts Queen   Hearts   Ace
-    ## 2  2   Spades  Jack   Spades King   Spades    10   Spades Queen   Spades   Ace
-    ## 3  3 Diamonds Queen Diamonds Jack Diamonds  King Diamonds    10 Diamonds   Ace
-    ## 4  4    Clubs    10    Clubs Jack    Clubs   Ace    Clubs  King    Clubs Queen
-    ## 5  5    Clubs   Ace    Clubs King    Clubs Queen    Clubs  Jack    Clubs    10
-    ## 6  6   Hearts     2   Hearts    4   Hearts     5   Hearts     3   Hearts     6
-    ##            CLASS    CAT COIN FLIP LIST_COL
-    ## 1    Royal flush  Socks     Tails  a, n, w
-    ## 2    Royal flush   Fred     Tails  v, e, c
-    ## 3    Royal flush Fluffy     Heads  v, f, t
-    ## 4    Royal flush   Nala     Heads  h, l, o
-    ## 5    Royal flush   Cher     Heads  b, d, v
-    ## 6 Straight flush   Lily     Heads  n, p, r
-    
+    ##   ID       S1    C1       S2   C2       S3    C3       S4    C4       S5    C5          CLASS
+    ## 1  1   Hearts    10   Hearts Jack   Hearts  King   Hearts Queen   Hearts   Ace    Royal flush
+    ## 2  2   Spades  Jack   Spades King   Spades    10   Spades Queen   Spades   Ace    Royal flush
+    ## 3  3 Diamonds Queen Diamonds Jack Diamonds  King Diamonds    10 Diamonds   Ace    Royal flush
+    ## 4  4    Clubs    10    Clubs Jack    Clubs   Ace    Clubs  King    Clubs Queen    Royal flush
+    ## 5  5    Clubs   Ace    Clubs King    Clubs Queen    Clubs  Jack    Clubs    10    Royal flush
+    ## 6  6   Hearts     2   Hearts    4   Hearts     5   Hearts     3   Hearts     6 Straight flush
+    ##      CAT COIN FLIP LIST_COL LOGICAL_CHAR LOGICAL_INT yesno
+    ## 1  Socks     Tails  n, s, p         TRUE          No FALSE
+    ## 2   Fred     Tails  z, x, k         TRUE        <NA>    NA
+    ## 3 Fluffy     Heads  x, b, v           NA         Yes FALSE
+    ## 4   Nala     Heads  k, f, g           NA          No FALSE
+    ## 5   Cher     Heads  j, q, h        FALSE          No  TRUE
+    ## 6   Lily     Heads  g, f, a        FALSE        <NA>    NA
 
-In real-world conditions, factorising variables from a data dictionary may produce unused factor levels. For example, imagine encoding a variable called `country_of_residence` into a factor using a dictionary of hundreds of countries, but everyone in your dataset resides in Australia. If you want to remove these unused levels, it's an easy one-line operation:
+In real-world conditions, the Factors that are generated may have unused
+factor levels. For example, imagine recoding a variable called
+`country_of_residence` using a mapping spreadsheet that has hundreds of
+countries, but everyone in your dataset resides in Australia so none of
+the other country levels are used at all. If you want to remove these
+unused levels, it’s an easy one-line operation:
 
 ``` r
 poker <- droplevels(poker)
@@ -397,6 +456,15 @@ Map(\(x) attr(x, "label"), poker)
     ## 
     ## $LIST_COL
     ## NULL
+    ## 
+    ## $LOGICAL_CHAR
+    ## [1] "Characters that are truthy, falsy, and neither."
+    ## 
+    ## $LOGICAL_INT
+    ## [1] "Integers that are truthy, falsy, and neither."
+    ## 
+    ## $yesno
+    ## [1] "Yeses and Nos and Missings."
 
 ## Step 3: Rename variables
 
@@ -419,10 +487,10 @@ dictionary at all, so it is also unchanged.
 colnames(poker)
 ```
 
-    ##  [1] "random_int"      "c1_suit"         "c1_rank"         "c2_suit"        
-    ##  [5] "c2_rank"         "c3_suit"         "c3_rank"         "c4_suit"        
-    ##  [9] "c4_rank"         "c5_suit"         "c5_rank"         "hand_from_cards"
-    ## [13] "CAT"             "coin_flip"       "LIST_COL"
+    ##  [1] "random_int"      "c1_suit"         "c1_rank"         "c2_suit"         "c2_rank"        
+    ##  [6] "c3_suit"         "c3_rank"         "c4_suit"         "c4_rank"         "c5_suit"        
+    ## [11] "c5_rank"         "hand_from_cards" "CAT"             "coin_flip"       "LIST_COL"       
+    ## [16] "LOGICAL_CHAR"    "LOGICAL_INT"     "yesno"
 
 You can also revert the names, which is useful if you make changes to
 the data dictionary and want to go back to Step 1.
@@ -439,9 +507,9 @@ revert_colnames(df = poker, path = dictionary_dir)
 colnames(poker)
 ```
 
-    ##  [1] "ID"        "S1"        "C1"        "S2"        "C2"        "S3"       
-    ##  [7] "C3"        "S4"        "C4"        "S5"        "C5"        "CLASS"    
-    ## [13] "CAT"       "COIN FLIP" "LIST_COL"
+    ##  [1] "ID"           "S1"           "C1"           "S2"           "C2"           "S3"          
+    ##  [7] "C3"           "S4"           "C4"           "S5"           "C5"           "CLASS"       
+    ## [13] "CAT"          "COIN FLIP"    "LIST_COL"     "LOGICAL_CHAR" "LOGICAL_INT"  "yesno"
 
 ------------------------------------------------------------------------
 
@@ -504,25 +572,28 @@ of a dataframe object.
     attribute of the variable.
     - **MAY** be left blank. This means that the variable will not be
       described.
-  - `factor_file` — The filename of a spreadsheet in the *dictionary
-    path* that describes how the variable’s values are mapped to labels,
-    e.g. postal codes to place names. These are also known as ‘value
-    labels’. These are used to convert the variable to a Factor type.
+  - `recode_with` — Describes how the variable will be recoded into a
+    different data type (if desired).
     - **MAY** be left blank. This means that the variable will not be
-      converted to a Factor.
-    - If not blank, **MUST** exactly match the filename of a file in the
+      modified.
+    - **MAY** be the name of a converter, which is wrapped in
+      `<angle-brackets>`.
+      - The converter **MUST** exactly match one of the [listed
+        converters](#converters).
+    - **MAY** exactly match the filename of a mapping spreadsheet in the
       *dictionary path*.
-    - All factor files that are named here **MUST** exist.
-    - **MAY** be given with or without a file extension; it is assumed
-      to point to a `.tsv` or `.txt` file.
-    - More than one `name` **MAY** share the same `factor_file`.
+      - All mapping spreadsheets that are named here **MUST** exist.
+      - **MAY** be given with or without a file extension; it is assumed
+        to point to a `.tsv` or `.txt` file.
+    - More than one `name` **MAY** share the same mapping spreadsheet or
+      converter.
 
-### Contents of `factor_file` files
+### Contents of mapping spreadsheets
 
-If defined for a variable in the `factor_file` column of `index`:
+If defined for a variable in the `recode_with` column of `index`:
 
 - **MUST** be in the *dictionary path*, and exactly match the name given
-  in the `factor_file` column.
+  in the \`recode_with\`\` column.
 
 - **MUST** be a tab-delimited spreadsheet in either *.tsv* or *.txt*
   format.

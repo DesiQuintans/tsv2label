@@ -1,7 +1,7 @@
 Package: tsv2label
 Type: Package
 Title: Factorise, Label, and Rename Datasets Using Plain Text Data Dictionaries
-Version: 0.2.2
+Version: 1.0.0
 Author: Desi Quintans
 Maintainer: Desi Quintans <science@desiquintans.com>
 Description: Analysts know that datasets can come with cryptic column names, and 
@@ -9,7 +9,7 @@ Description: Analysts know that datasets can come with cryptic column names, and
    programmatic use; as 'PDFs', in 'Word' documents, in emails, or in other 
    people's code fragments. It is common to work through a messy dictionary by 
    copying and pasting text into a spreadsheet. 'tsv2label' lets you use such 
-   spreadsheets (as tab-separated '.TSV' or '.TXT' files) to factorise, label, 
+   spreadsheets (as tab-separated '.TSV' or '.TXT' files) to recode, label, 
    and rename datasets. This format is ideal because it can be hand-edited in 
    'Excel'; can be built by copying and pasting from any data source; can be 
    cleaned and reshaped with regular expressions and multiple cursors; and can 

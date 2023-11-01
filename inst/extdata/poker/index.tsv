@@ -1,4 +1,4 @@
-name	rename	description	factor_file
+name	rename	description	recode_with
 ID	random_int	Some random integers.	
 S1	c1_suit	Suit of card #1	values_suits
 C1	c1_rank	Rank of card #1	values_ranks
@@ -14,3 +14,6 @@ CLASS	hand_from_cards	Poker hand (cards 1-5)	values_hands
 CAT		Random cat names.	" "
 COIN FLIP	coin_flip	Outcome of a coinflip.	values_flip
 not_exist		Column not in dataset.	
+LOGICAL_CHAR		Characters that are truthy, falsy, and neither.	<truefalse>
+LOGICAL_INT		Integers that are truthy, falsy, and neither.	<noyes-lazy>
+yesno		Yeses and Nos and Missings.	<truefalse>
