@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{poker}}{
 
-A data frame with 100 rows and 17 columns.
+A data frame with 100 rows and 18 columns.
 }
 }
 \source{
@@ -39,7 +39,7 @@ factorises the \code{CLASS} column only).
 \item A data dictionary can omit columns that \strong{do} exist in the data (e.g. \code{LIST_COL}).
 \item Non-syntactic names are allowed (e.g. \verb{COIN FLIP}).
 \item List columns are supported (e.g. \code{LIST_COL}).
-\item Conversion of truthy and falsy variables (\code{LOGICAL_CHAR} and \code{LOGICAL_INT})
+\item Conversion of truthy and falsy variables (\code{LOGICAL_CHAR}, \code{LOGICAL_INT}, and \code{yesno})
 using built-in converters.
 }
 }

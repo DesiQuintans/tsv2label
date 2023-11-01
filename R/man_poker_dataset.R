@@ -22,11 +22,11 @@
 #' 6. A data dictionary can omit columns that **do** exist in the data (e.g. `LIST_COL`).
 #' 7. Non-syntactic names are allowed (e.g. `COIN FLIP`).
 #' 8. List columns are supported (e.g. `LIST_COL`).
-#' 9. Conversion of truthy and falsy variables (`LOGICAL_CHAR` and `LOGICAL_INT`)
+#' 9. Conversion of truthy and falsy variables (`LOGICAL_CHAR`, `LOGICAL_INT`, and `yesno`)
 #'    using built-in converters.
 #'
 #' @format ## `poker`
-#' A data frame with 100 rows and 17 columns.
+#' A data frame with 100 rows and 18 columns.
 #'
 #' @source <https://archive.ics.uci.edu/ml/datasets/Poker+Hand>
 #' @md

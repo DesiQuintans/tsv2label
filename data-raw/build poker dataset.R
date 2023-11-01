@@ -38,5 +38,7 @@ set.seed(12345)
 poker$LOGICAL_INT <- c(0, NA_integer_, 1, 2, -1,
                        sample(c(-2:2, NA_integer_), size = 95, replace = TRUE))
 
+set.seed(12345)
+poker$yesno <- sample(c("Yes", "No", NA), size = 100, replace = TRUE)
 
 usethis::use_data(poker, overwrite = TRUE)
