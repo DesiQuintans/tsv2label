@@ -1,7 +1,7 @@
 Package: tsv2label
 Type: Package
 Title: Factorise, Label, and Rename Datasets Using Plain Text Data Dictionaries
-Version: 1.0.1
+Version: 1.0.2
 Author: Desi Quintans
 Maintainer: Desi Quintans <science@desiquintans.com>
 Description: Analysts know that datasets can come with cryptic column names, and 
@@ -24,4 +24,4 @@ Depends:
     R (>= 3.6.0)
 Imports:
     utils (>= 3.6.0)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0

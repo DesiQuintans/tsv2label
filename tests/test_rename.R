@@ -52,17 +52,6 @@ stopifnot(
 
 
 
-run_nested <- function(df) {
-    tsv2label::rename_with_dictionary(df, dict_path)
-}
-
-for(i in 1) {
-    nested_poker <- poker
-    run_nested(nested_poker)
-}
-
-
-
 # Clean up ----------------------------------------------------------------
 
 rm(my_poker, dict_path, orig_colnames, new_colnames)

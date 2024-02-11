@@ -10,6 +10,7 @@
 #' @param df (Dataframe) A dataframe to label.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'      either a folder or a .zip file. See [expected_files] for more info.
+#' @param quiet (Logical) If `FALSE` (default), prints confirmation messages.
 #' @param up (Integer) The number of environments to step back in, determining
 #'   where this function will be evaluated. See [parent.frame()] for details.
 #'   The default value of `up = 2` is usually appropriate.
