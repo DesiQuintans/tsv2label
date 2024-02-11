@@ -4,13 +4,15 @@
 \alias{recode_with_dictionary}
 \title{Recode variables with a data dictionary}
 \usage{
-recode_with_dictionary(df, path, up = 2)
+recode_with_dictionary(df, path, quiet = FALSE, up = 2)
 }
 \arguments{
 \item{df}{(Dataframe) A dataframe to label.}
 
 \item{path}{(Character) Path to the dataset's dictionary files, which is
 either a folder or a .zip file. See \link{expected_files} for more info.}
+
+\item{quiet}{(Logical) If \code{FALSE} (default), prints confirmation messages.}
 
 \item{up}{(Integer) The number of environments to step back in, determining
 where this function will be evaluated. See \code{\link[=parent.frame]{parent.frame()}} for details.

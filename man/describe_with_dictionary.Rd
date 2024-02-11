@@ -4,7 +4,7 @@
 \alias{describe_with_dictionary}
 \title{Add descriptions to variables using a data dictionary}
 \usage{
-describe_with_dictionary(df, path, up = 2)
+describe_with_dictionary(df, path, quiet = FALSE, up = 2)
 }
 \arguments{
 \item{df}{(Dataframe) A dataframe to label.}

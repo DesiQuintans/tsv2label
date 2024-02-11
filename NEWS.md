@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased GitHub version
+
+- Added
+    - `quiet` argument added to functions (defaults to `FALSE`).
+
 
 ## 1.0.0
 

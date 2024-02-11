@@ -2,7 +2,7 @@
 # This is a function factory because using new or old colnames is the same basic
 # code, but with the old and new names simply swapped around.
 closure.tsv_to_colnames <- function(orig_to_new, up = 2) {
-    function(df, path, up = 2) {
+    function(df, path, quiet = FALSE, up = 2) {
         df_char <- deparse(substitute(df))
 
         flist <- list_label_files(path)
@@ -28,9 +28,11 @@ closure.tsv_to_colnames <- function(orig_to_new, up = 2) {
 
         eval_above(code, up = up)
 
-        message(msg_fmt("head(colnames(", df_char ,")):"))
-        cat(" ", eval_above(sprintf("head(colnames(%s))", df_char), up = up))
-        cat("\n\n")
+        if (quiet == FALSE) {
+            message(msg_fmt("head(colnames(", df_char ,")):"))
+            cat(" ", eval_above(sprintf("head(colnames(%s))", df_char), up = up))
+            cat("\n\n")
+        }
     }
 }
 
@@ -52,6 +54,7 @@ closure.tsv_to_colnames <- function(orig_to_new, up = 2) {
 #' @param df (Dataframe) A dataframe whose columns you want to rename.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'   either a folder or a .zip file. See [expected_files] for more info.
+#' @param quiet (Logical) If `FALSE` (default), prints confirmation messages.
 #' @param up (Integer) The number of environments to step back in, determining
 #'   where this function will be evaluated. See [parent.frame()] for details.
 #'   The default value of `up = 2` is usually appropriate.

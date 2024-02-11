@@ -44,6 +44,7 @@
 #' @param df (Dataframe) A dataframe to label.
 #' @param path (Character) Path to the dataset's dictionary files, which is
 #'      either a folder or a .zip file. See [expected_files] for more info.
+#' @param quiet (Logical) If `FALSE` (default), prints confirmation messages.
 #' @param up (Integer) The number of environments to step back in, determining
 #'   where this function will be evaluated. See [parent.frame()] for details.
 #'   The default value of `up = 2` is usually appropriate.
@@ -100,7 +101,7 @@
 #' my_poker <- droplevels(my_poker)
 #' }
 #' @md
-recode_with_dictionary <- function(df, path, up = 2) {
+recode_with_dictionary <- function(df, path, quiet = FALSE, up = 2) {
     df_char <- deparse(substitute(df))
 
 
@@ -193,7 +194,9 @@ recode_with_dictionary <- function(df, path, up = 2) {
 
         # 0. Tell the user which converter is being applied (so that they know
         # something is happening).
-        message(sprintf(message_str, i, converter_tag, paste(cols, collapse = ", ")))
+        if (quiet == FALSE) {
+            message(sprintf(message_str, i, converter_tag, paste(cols, collapse = ", ")))
+        }
 
         # 1. Run the code
         code <- sprintf(converter_call, df_char, cols)
@@ -217,7 +220,9 @@ recode_with_dictionary <- function(df, path, up = 2) {
 
         # 0. Tell the user which file is being applied (so that they know something
         # is happening).
-        message(sprintf(message_str, i + length(each_converter), recode_with, paste(cols, collapse = ", ")))
+        if (quiet == FALSE) {
+            message(sprintf(message_str, i + length(each_converter), recode_with, paste(cols, collapse = ", ")))
+        }
 
         # 1. Convert the receiving columns to Character, to match the value file
         #    which is always read in as Character. Also trim whitespace from them.
@@ -264,28 +269,30 @@ recode_with_dictionary <- function(df, path, up = 2) {
 
     # 6. Preview the change ---------------------------------------------------
 
-    # Here's up to 6 columns, one from each converter and definition file
-    x <- utils::head(sapply(c(each_converter, each_file), utils::head, 1))
+    if (quiet == FALSE) {
+        # Here's up to 6 columns, one from each converter and definition file
+        x <- utils::head(sapply(c(each_converter, each_file), utils::head, 1))
 
-    cat("\n")
+        cat("\n")
 
-    for (i in seq_along(x)) {
-        this_levels <- eval_above(sprintf('levels(%s[["%s"]])', df_char, x[i]), up = up)
+        for (i in seq_along(x)) {
+            this_levels <- eval_above(sprintf('levels(%s[["%s"]])', df_char, x[i]), up = up)
 
-        if (!is.null(this_levels)) {
-            message(msg_fmt(
-                sprintf("Peeking at 'levels(%s[[\"%s\"]])', built from '%s':",
-                        df_char, x[i], names(x[i]))
-            ))
-            cat(msg_fmt(paste(this_levels, collapse = ", ")))
-        } else {
-            message(msg_fmt(
-                sprintf("Peeking at 'unique(%s[[\"%s\"]])', built from '%s':",
-                        df_char, x[i], names(x[i]))
-            ))
-            cat(msg_fmt(paste(eval_above(sprintf('unique(%s[["%s"]])', df_char, x[i]), up = up), collapse = ", ")))
+            if (!is.null(this_levels)) {
+                message(msg_fmt(
+                    sprintf("Peeking at 'levels(%s[[\"%s\"]])', built from '%s':",
+                            df_char, x[i], names(x[i]))
+                ))
+                cat(msg_fmt(paste(this_levels, collapse = ", ")))
+            } else {
+                message(msg_fmt(
+                    sprintf("Peeking at 'unique(%s[[\"%s\"]])', built from '%s':",
+                            df_char, x[i], names(x[i]))
+                ))
+                cat(msg_fmt(paste(eval_above(sprintf('unique(%s[["%s"]])', df_char, x[i]), up = up), collapse = ", ")))
+            }
+
+            cat("\n\n")
         }
-
-        cat("\n\n")
     }
 }

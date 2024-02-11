@@ -35,7 +35,7 @@
 #' ##  S3 Suit of card #3
 #' }
 #' @md
-describe_with_dictionary <- function(df, path, up = 2) {
+describe_with_dictionary <- function(df, path, quiet = FALSE, up = 2) {
     df_char <- deparse(substitute(df))
 
     # 1. Get the filenames in the label directory.
@@ -61,6 +61,9 @@ describe_with_dictionary <- function(df, path, up = 2) {
     # 6. Evaluate that code in the environment above this one.
     eval_above(code, up = up)
 
-    cat(" ", eval_above(sprintf('tsv2label:::display_attr(%s, "label")', df_char), up = up))
-    cat("\n\n")
+
+    if (quiet == FALSE) {
+        cat(" ", eval_above(sprintf('tsv2label:::display_attr(%s, "label")', df_char), up = up))
+        cat("\n\n")
+    }
 }
