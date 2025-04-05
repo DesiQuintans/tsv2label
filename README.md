@@ -192,7 +192,7 @@ ignored):
     2.  The filename of a **mapping spreadsheet** in the same folder
         (with or without file extension) that describes how levels are
         mapped to labels, e.g. postal codes to suburb names.
-    3.  The name of a **converter**, which is a built-in way to handle
+    3.  The name of a **\<converter>**, which is a built-in way to handle
         common recoding operations. A list of accepted ones is given
         below.
 
@@ -202,7 +202,7 @@ many columns.
 ### Converters
 
 Converters are built-in methods for the most common recoding operations.
-The package treats anything wrapped in *<angle brackets>* as a
+The package treats anything wrapped in *\<angle brackets>* as a
 converter. Currently accepted converters are:
 
 #### Convert 1/0/yes/no/true/false values
@@ -210,24 +210,24 @@ converter. Currently accepted converters are:
 These conversions ignore case. ‘Truthy’ values are
 `{1, y, yes, t, true}`. ‘Falsy’ values are `{0, n, no, f, false}`.
 
-- **`<truefalse>`** — Converts truthy values to `TRUE`, falsy values to
+- **`\<truefalse>`** — Converts truthy values to `TRUE`, falsy values to
   `FALSE`, everything else (including `NA`) to `NA`.
 
-- **`<truefalse-lazy>`** — Converts truthy values to `TRUE` and
+- **`\<truefalse-lazy>`** — Converts truthy values to `TRUE` and
   everything else to `FALSE`, but preserves `NA` as `NA`.
 
-- **`<yesno>`** — Converts truthy values to factor level `"Yes"`, falsy
+- **`\<yesno>`** — Converts truthy values to factor level `"Yes"`, falsy
   values to factor level `"No"`, and everything else (including `NA`) to
   `NA`. `"Yes"` is the first factor level.
 
-- **`<noyes>`** — Same as above, but with `"No"` as the first factor
+- **`\<noyes>`** — Same as above, but with `"No"` as the first factor
   level.
 
-- **`<yesno-lazy>`** — Converts truthy values to factor level `"Yes"`
+- **`\<yesno-lazy>`** — Converts truthy values to factor level `"Yes"`
   and everything else to factor level `"No"`, but preserves `NA` as
   `NA`. `"Yes"` is the first factor level.
 
-- **`<noyes-lazy>`** — Same as above, but with `"No"` as the first
+- **`\<noyes-lazy>`** — Same as above, but with `"No"` as the first
   factor level.
 
 ### Mapping spreadsheets
