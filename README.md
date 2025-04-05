@@ -34,7 +34,8 @@ Desi Quintans
 # CRAN coming soon
 
 # Install from GitHub for up-to-date changes
-remotes::install_github("DesiQuintans/tsv2label")
+# install.packages("pak")
+pak::pak("DesiQuintans/tsv2label")
 
 library(tsv2label)  # Load it up!
 ```
