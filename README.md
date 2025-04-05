@@ -49,10 +49,13 @@ especially if it looks like they are coding for something.
 your dataset automatically; especially helpful if your dataset is
 hundreds of columns wide.
 
-It uses tab-delimited spreadsheets which are editable in Excel; easy to
-assemble by copying and pasting from existing messy data dictionaries;
-can be cleaned and reshaped with regular expressions and multiple
-cursors; and can be tracked and diffed with version control software.
+It uses tab-delimited spreadsheets because they are:
+
+1. Editable in Excel
+2. Easy to assemble by copying and pasting from existing messy data dictionaries
+3. Can be cleaned and reshaped in your favourite text editor using regular expressions and multiple
+cursors, and
+4. They can be tracked and diffed with version control software.
 
 ![](data-raw/tsv2label.png)
 
