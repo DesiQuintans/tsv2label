@@ -49,7 +49,7 @@ especially if it looks like they are coding for something.
 your dataset automatically; especially helpful if your dataset is
 hundreds of columns wide.
 
-It uses tab-delimited spreadsheets because they are:
+It uses tab-delimited spreadsheets (and not CSVs or XLSXs) because they are:
 
 1. Editable in Excel
 2. Easy to assemble by copying and pasting from existing messy data dictionaries
