@@ -192,7 +192,7 @@ ignored):
     2.  The filename of a **mapping spreadsheet** in the same folder
         (with or without file extension) that describes how levels are
         mapped to labels, e.g. postal codes to suburb names.
-    3.  The name of a **<converter>**, which is a built-in way to handle
+    3.  The name of a **converter**, which is a built-in way to handle
         common recoding operations. A list of accepted ones is given
         below.
 
