@@ -233,18 +233,18 @@ These conversions ignore case. ‘Truthy’ values are
 ### Mapping spreadsheets
 
 The mapping spreadsheets control how a variable is going to be converted
-to a Factor type. mapping spreadsheet must be tab-delimited files in
+to a Factor type. The mapping spreadsheet must be tab-delimited files in
 *.TSV* or *.TXT* format, just like the Index file is.
 
 ``` r
 system.file("extdata/poker/values_suits.tsv", package = "tsv2label") |> read.delim()
 ```
 
-    ##   levels   labels ordered
-    ## 1      1   Hearts   FALSE
-    ## 2      2   Spades      NA
-    ## 3      3 Diamonds      NA
-    ## 4      4    Clubs      NA
+    ##   levels   labels ordered exclude
+    ## 1      1   Hearts   FALSE        
+    ## 2      2   Spades      NA        
+    ## 3      3 Diamonds      NA        
+    ## 4      4    Clubs      NA        
 
 It must have these two columns in any order:
 
@@ -261,7 +261,7 @@ Another two columns are optional, and can be presented in any order:
 4.  `exclude` controls whether a level is excluded from the final factor
     (i.e. converted to `NA`). An affirmative value (case-insensitive:
     `true`, `t`, `yes`, `y`, or `1`) in the same row as a level will
-    exclude that level.
+    exclude that level. Any other value (including blank) keeps it.
 
 The columns are named after their matching arguments in `factor()`:
 
@@ -269,8 +269,8 @@ The columns are named after their matching arguments in `factor()`:
 str(factor)
 ```
 
-    ## function (x = character(), levels, labels = levels, exclude = NA, ordered = is.ordered(x), 
-    ##     nmax = NA)
+    ## function (x = character(), levels, labels = levels, 
+    ##           exclude = NA, ordered = is.ordered(x), nmax = NA)
 
 Any other columns are ignored.
 
